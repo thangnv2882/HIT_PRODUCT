@@ -160,13 +160,15 @@ public class UserServiceImpl implements IUserService {
     public User updateUserById(Long id, UserDTO userDTO) {
         Optional<User> user = userRepository.findById(id);
         checkUserExists(user);
-//            if(userRepository.findByUsername(userDTO.getUsername()) != null) {
-//            throw new DuplicateException("Username: " + userDTO.getUsername() + " is already registered.");
-//        }
+        if(userRepository.findByUsername(userDTO.getUsername()) != null) {
+            throw new DuplicateException("Username: " + userDTO.getUsername() + " is already registered.");
+        }
+        if(userRepository.findByEmail(userDTO.getEmail()) != null) {
+            throw new DuplicateException("Email: " + userDTO.getEmail() + " is already registered.");
+        }
         modelMapper.map(userDTO, user.get());
-        checkEmailOrUsernameExists(user.get());
 //        user.get().setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        user.get().setPassword(userDTO.getPassword());
+//        user.get().setPassword(userDTO.getPassword());
         return userRepository.save(user.get());
     }
 
