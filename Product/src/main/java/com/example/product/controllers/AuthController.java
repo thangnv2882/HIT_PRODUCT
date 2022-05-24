@@ -1,8 +1,12 @@
 package com.example.product.controllers;
 
+import com.example.product.base.BaseController;
+import com.example.product.daos.User;
+import com.example.product.dtos.UserDTO;
 import com.example.product.exceptions.NotFoundException;
 import com.example.product.payload.AuthenticationRequest;
 import com.example.product.payload.AuthenticationResponse;
+import com.example.product.services.IUserService;
 import com.example.product.services.impl.MyUserDetailsService;
 import com.example.product.utils.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("api/v1/auth")
-public class AuthController {
+public class AuthController extends BaseController<User> {
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -29,22 +33,34 @@ public class AuthController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            authenticationRequest.getUsername(), authenticationRequest.getPassword()
-                    )
-            );
-        } catch (Exception e) {
-            throw new NotFoundException("Incorrect username or password");
-        }
+    @Autowired
+    private IUserService userService;
 
-        UserDetails userDetails = myUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-        String jwt = jwtTokenUtil.generateToken(userDetails);
-        return ResponseEntity.ok().body(new AuthenticationResponse(authenticationRequest.getUsername(), jwt));
+//    @PostMapping("/login")
+//    public ResponseEntity<?> login(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+//        try {
+//            authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(
+//                            authenticationRequest.getUsername(), authenticationRequest.getPassword()
+//                    )
+//            );
+//        } catch (Exception e) {
+//            throw new NotFoundException("Incorrect username or password");
+//        }
+//
+//        UserDetails userDetails = myUserDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+//        String jwt = jwtTokenUtil.generateToken(userDetails);
+//        return ResponseEntity.ok().body(new AuthenticationResponse(200L, authenticationRequest.getUsername(), jwt));
+//    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody UserDTO userDTO) {
+        return this.resSuccess(userService.login(userDTO));
     }
+
+
+
+
 
 }
 

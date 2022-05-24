@@ -6,10 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Nationalized;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -57,4 +60,17 @@ public class User extends BaseEntity {
     private String linkAvt;
 
     private String codeActive;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(idUser, user.idUser) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(email, user.email) && Objects.equals(fullName, user.fullName) && Objects.equals(gender, user.gender) && Objects.equals(phoneNumber, user.phoneNumber) && Objects.equals(address, user.address) && Objects.equals(birthday, user.birthday) && Objects.equals(biography, user.biography) && Objects.equals(linkAvt, user.linkAvt) && Objects.equals(codeActive, user.codeActive);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(idUser, username, password, email, fullName, gender, phoneNumber, address, birthday, biography, linkAvt, codeActive);
+    }
 }

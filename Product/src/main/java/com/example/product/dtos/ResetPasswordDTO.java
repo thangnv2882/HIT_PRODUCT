@@ -9,6 +9,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class ActiveDTO {
-    private String codeActive;
+public class ResetPasswordDTO {
+    private String code;
+    private String newPassword;
 }

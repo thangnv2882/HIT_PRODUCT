@@ -29,8 +29,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String[] WHILE_LIST_URLS = {
             "/auth/login",
-            "/api/v1/users/register"
-
+            "/api/v1/users/register",
+            "/api/v1/users/"
     };
 //    private static final String[] AUTHENTICATION_LIST_URLS = {
 //

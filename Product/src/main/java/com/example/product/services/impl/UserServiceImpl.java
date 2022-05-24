@@ -2,8 +2,10 @@ package com.example.product.services.impl;
 
 import com.example.product.daos.User;
 import com.example.product.dtos.ActiveDTO;
+import com.example.product.dtos.ResetPasswordDTO;
 import com.example.product.dtos.UserDTO;
 import com.example.product.exceptions.DuplicateException;
+import com.example.product.exceptions.ExceptionAll;
 import com.example.product.exceptions.NotFoundException;
 import com.example.product.repositories.IUserRepository;
 import com.example.product.services.ISendMailService;
@@ -45,6 +47,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public List<User> findAllUsers() {
+        System.out.println(userRepository.findAllByStatusIs(Boolean.TRUE).get(0));
         return userRepository.findAllByStatusIs(Boolean.TRUE);
     }
 
@@ -56,15 +59,32 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public User login(UserDTO userDTO) {
+        List<User> users = userRepository.findAllByStatusIs(Boolean.TRUE);
+        for (User user: users) {
+            if(user.getUsername().compareTo(userDTO.getUsername()) == 0
+            && user.getPassword().compareTo(userDTO.getPassword()) == 0) {
+                return user;
+            }
+        }
+//        if (users.contains(userDTO)) {
+//            User user = modelMapper.map(userDTO, User.class);
+//            return user;
+//        }
+        throw new NotFoundException("Incorrect username or password");
+    }
+
+    @Override
     public User registerUser(UserDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
-        if(userRepository.findByUsername(user.getUsername()) != null) {
-            throw new DuplicateException("Username: " + user.getUsername() + " is already registered.");
-        }
-        if(userRepository.findByEmail(user.getEmail()) != null) {
-            throw new DuplicateException("Email: " + user.getEmail() + " is already registered.");
-        }
-        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+//        if(userRepository.findByUsername(user.getUsername()) != null) {
+//            throw new DuplicateException("Username: " + user.getUsername() + " is already registered.");
+//        }
+//        if(userRepository.findByEmail(user.getEmail()) != null) {
+//            throw new DuplicateException("Email: " + user.getEmail() + " is already registered.");
+//        }
+        checkEmailOrUsernameExists(user);
+//        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         RandomStringUtils rand = new RandomStringUtils();
         String code = rand.randomNumeric(4);
         user.setCodeActive(code);
@@ -74,31 +94,79 @@ public class UserServiceImpl implements IUserService {
                 + ".\n\tEmail: " + userDTO.getEmail()
                 + ".\n\tPassword: " + userDTO.getPassword()
                 + ".\n\nYOUR ACTIVATION CODE: " + code
-                + ".\n\nThank you for using our service.";
-        sendMailService.sendMailWithText(Constants.TITLE, content, userDTO.getEmail());
+                + ".\nThank you for using our service.";
+        sendMailService.sendMailWithText(Constants.TITLE_ACTIVE, content, userDTO.getEmail());
         userRepository.save(user);
         return user;
-
     }
 
     @Override
-    public String activeUser(Long idUser, ActiveDTO activeDTO) {
-        Optional<User> user = userRepository.findById(idUser);
+    public User resendCode(Long id) {
+        Optional<User> user = userRepository.findById(id);
         checkUserExists(user);
-        if(user.get().getCodeActive().compareTo(activeDTO.getCode()) == 0) {
-            user.get().setStatus(true);
+        RandomStringUtils rand = new RandomStringUtils();
+        String code = rand.randomNumeric(4);
+        user.get().setCodeActive(code);
+        String content = ".YOUR ACTIVATION CODE: " + code
+                + ".\nThank you for using our service.";
+        sendMailService.sendMailWithText(Constants.TITLE_ACTIVE, content, user.get().getEmail());
+        userRepository.save(user.get());
+
+        return user.get();
+    }
+
+    @Override
+    public User forgetPassword(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        checkUserExists(user);
+        RandomStringUtils rand = new RandomStringUtils();
+        String code = rand.randomNumeric(4);
+        user.get().setCodeActive(code);
+        String content = "YOUR SECURITY CODE: " + code
+                + ".\nThank you for using our service.";
+        sendMailService.sendMailWithText(Constants.TITLE_RESET, content, user.get().getEmail());
+        userRepository.save(user.get());
+        return user.get();
+    }
+
+    @Override
+    public User resetPassword(Long id, ResetPasswordDTO resetPasswordDTO) {
+        Optional<User> user = userRepository.findById(id);
+        checkUserExists(user);
+        if(user.get().getCodeActive().compareTo(resetPasswordDTO.getCode()) == 0) {
+            user.get().setCodeActive("");
+            user.get().setPassword(resetPasswordDTO.getNewPassword());
             userRepository.save(user.get());
-            return "Successful activation";
+            return user.get();
         }
-        return "Invalid code";
+        throw new ExceptionAll("ACTIVATION CODE is incorrect.");
+    }
+
+    @Override
+    public User activeUser(Long id, ActiveDTO activeDTO) {
+        Optional<User> user = userRepository.findById(id);
+        checkUserExists(user);
+        System.out.println(activeDTO.getCodeActive());
+        if(user.get().getCodeActive().compareTo(activeDTO.getCodeActive()) == 0) {
+            user.get().setStatus(true);
+            user.get().setCodeActive("");
+            userRepository.save(user.get());
+            return user.get();
+        }
+        throw new ExceptionAll("ACTIVATION CODE is incorrect.");
     }
 
     @Override
     public User updateUserById(Long id, UserDTO userDTO) {
         Optional<User> user = userRepository.findById(id);
         checkUserExists(user);
+//            if(userRepository.findByUsername(userDTO.getUsername()) != null) {
+//            throw new DuplicateException("Username: " + userDTO.getUsername() + " is already registered.");
+//        }
         modelMapper.map(userDTO, user.get());
-        user.get().setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        checkEmailOrUsernameExists(user.get());
+//        user.get().setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.get().setPassword(userDTO.getPassword());
         return userRepository.save(user.get());
     }
 
@@ -126,6 +194,14 @@ public class UserServiceImpl implements IUserService {
     public void checkUserExists(Optional<User> user) {
         if (user.isEmpty()) {
             throw new NotFoundException("Couldn't find a user.");
+        }
+    }
+    public void checkEmailOrUsernameExists(User user) {
+        if(userRepository.findByUsername(user.getUsername()) != null) {
+            throw new DuplicateException("Username: " + user.getUsername() + " is already registered.");
+        }
+        if(userRepository.findByEmail(user.getEmail()) != null) {
+            throw new DuplicateException("Email: " + user.getEmail() + " is already registered.");
         }
     }
 }
