@@ -1,12 +1,26 @@
+UserDTO
 {
+    "firstName": "first1",
+    "lastName": "last1",
     "username": "username",
-    "password": "123",
     "email": "tgtg28082002@gmail.com",
-    "fullName": "User 1",
-    "gender": "Nam",
     "phoneNumber": "012345678",
-    "address": "DHCN HN",
-    "birthday": "01/01/2002",
-    "biography": "Không có tiểu sử",
-    "linkAvt": "avt"
+    "password": "123",
+    "fullName": "User 1",
+    "gender": "",
+    "address": "",
+    "birthday": "",
+    "biography": "",
+    "linkAvt": ""
+}
+
+ActiveDTO
+{
+    "code": ""
+}
+
+ResetPass
+{
+    "code": "",
+    "newPassword": ""
 }
