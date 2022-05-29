@@ -1,0 +1,20 @@
+UserDTO
+{
+    "firstName": "first1",
+    "lastName": "last1",
+    "email": "tgtg28082002@gmail.com",
+    "phoneNumber": "012345678",
+    "password": "123",
+    "fullName": "User 1",
+    "gender": "",
+    "address": "",
+    "birthday": "",
+    "biography": "",
+    "linkAvt": ""
+}
+
+ResetPass
+{
+    "code": "",
+    "newPassword": ""
+}
