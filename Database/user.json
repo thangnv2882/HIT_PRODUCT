@@ -2,7 +2,6 @@ UserDTO
 {
     "firstName": "first1",
     "lastName": "last1",
-    "username": "username",
     "email": "tgtg28082002@gmail.com",
     "phoneNumber": "012345678",
     "password": "123",
@@ -12,11 +11,6 @@ UserDTO
     "birthday": "",
     "biography": "",
     "linkAvt": ""
-}
-
-ActiveDTO
-{
-    "code": ""
 }
 
 ResetPass
