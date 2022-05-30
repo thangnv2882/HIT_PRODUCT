@@ -11,8 +11,10 @@ import com.example.strawberry.application.utils.UploadFile;
 import com.example.strawberry.config.exception.DuplicateException;
 import com.example.strawberry.config.exception.ExceptionAll;
 import com.example.strawberry.config.exception.NotFoundException;
+//import com.example.strawberry.domain.dto.ResetPasswordDTO;
 import com.example.strawberry.domain.dto.ResetPasswordDTO;
 import com.example.strawberry.domain.dto.UserDTO;
+import com.example.strawberry.domain.entity.Group;
 import com.example.strawberry.domain.entity.Post;
 import com.example.strawberry.domain.entity.User;
 import com.example.strawberry.domain.entity.UserRegister;
@@ -84,10 +86,11 @@ public class UserServiceImpl implements IUserService {
                     + ".\n\nYOUR ACTIVATION CODE: " + code
                     + ".\nThank you for using our service.";
             sendMailService.sendMailWithText(EmailConstant.SUBJECT_ACTIVE, content, userDTO.getEmail());
-            userRegister.setFullName(userDTO.getFirstName() + userDTO.getLastName());
+            userRegister.setFullName(userDTO.getFirstName() + " " + userDTO.getLastName());
             userRegisterRepository.save(userRegister);
         }
-        return userRegister;
+        UserRegister userRegister1 = userRegisterRepository.findByEmailOrPhoneNumber(userDTO.getEmail(), userDTO.getPhoneNumber());
+        return userRegister1;
     }
 
     @Override
@@ -117,36 +120,47 @@ public class UserServiceImpl implements IUserService {
                 + ".\nThank you for using our service.";
         sendMailService.sendMailWithText(EmailConstant.SUBJECT_ACTIVE, content, userRegister.get().getEmail());
         userRegisterRepository.save(userRegister.get());
-
         return userRegister.get();
     }
 
     @Override
-    public User forgetPassword(Long id) {
-        Optional<User> user = userRepository.findById(id);
-        checkUserExists(user);
-        RandomStringUtils rand = new RandomStringUtils();
-        String code = rand.randomNumeric(4);
-        user.get().setCode(code);
-        String content = "YOUR SECURITY CODE: " + code
+    public User forgetPassword(String email) {
+        User user = userRepository.findByEmail(email);
+        if(user == null) {
+            throw new NotFoundException(MessageConstant.ACCOUNT_NOT_EXISTS);
+        }
+        String content = "YOUR PASSWORD: " + user.getPassword()
                 + ".\nThank you for using our service.";
-        sendMailService.sendMailWithText(EmailConstant.SUBJECT_RESET, content, user.get().getEmail());
-        userRepository.save(user.get());
-        return user.get();
+        sendMailService.sendMailWithText(EmailConstant.SUBJECT_NOTIFICATION, content, email);
+        userRepository.save(user);
+        return user;
     }
 
     @Override
-    public User resetPassword(Long id, ResetPasswordDTO resetPasswordDTO) {
+    public User changePassword(Long id, ResetPasswordDTO resetPasswordDTO) {
         Optional<User> user = userRepository.findById(id);
         checkUserExists(user);
-        if (user.get().getCode().compareTo(resetPasswordDTO.getCode()) == 0) {
-            user.get().setCode(null);
-            user.get().setPassword(resetPasswordDTO.getNewPassword());
-            userRepository.save(user.get());
-            return user.get();
+        if(user.get().getPassword().compareTo(resetPasswordDTO.getOldPassword()) != 0) {
+            throw new ExceptionAll("Incorrect password");
         }
-        throw new ExceptionAll(MessageConstant.ACTIVE_FALSE);
+        user.get().setPassword(resetPasswordDTO.getNewPassword());
+        return user.get();
     }
+
+//    @Override
+//    public User resetPassword(ResetPasswordDTO resetPasswordDTO) {
+//        User user = userRepository.findByEmail(resetPasswordDTO.getEmail());
+//        if(user == null) {
+//            throw new NotFoundException(MessageConstant.ACCOUNT_NOT_EXISTS);
+//        }
+//        if (user.getCode().compareTo(resetPasswordDTO.getCode()) == 0) {
+//            user.setCode(null);
+//            user.setPassword(resetPasswordDTO.getNewPassword());
+//            userRepository.save(user);
+//            return user;
+//        }
+//        throw new ExceptionAll(MessageConstant.ACTIVE_FALSE);
+//    }
 
     @Override
     public User updateUserById(Long id, UserDTO userDTO) {
@@ -207,6 +221,73 @@ public class UserServiceImpl implements IUserService {
         });
         return postsEnd;
     }
+
+    @Override
+    public Set<Group> getAllGroupByIdUser(Long idUser) {
+        Optional<User> user = userRepository.findById(idUser);
+        checkUserExists(user);
+        Set<Group> groups = user.get().getGroups();
+        return groups;
+    }
+//
+//    @Override
+//    public User requestAddFriend(Long idUserParent, Long idUserChild) {
+//        Optional<User> userParent = userRepository.findById(idUserParent);
+//        checkUserExists(userParent);
+//        Optional<User> userChild = userRepository.findById(idUserChild);
+//        checkUserExists(userChild);
+//
+//        userChild.get().setFriendRequest(Boolean.FALSE);
+//        userParent.get().setFriendRequest(Boolean.FALSE);
+//
+//        userRepository.save(userChild.get());
+//        userRepository.save(userParent.get());
+//
+//        return userParent.get();
+//    }
+//
+//    @Override
+//    public User acceptAddFriend(Long idUserParent, Long idUserChild) {
+//        Optional<User> userParent = userRepository.findById(idUserParent);
+//        checkUserExists(userParent);
+//        Optional<User> userChild = userRepository.findById(idUserChild);
+//        checkUserExists(userChild);
+//
+//        System.out.println(userParent.get().getEmail());
+//        System.out.println(userChild.get().getEmail());
+////
+////        userChild.get().setFriendRequest(Boolean.TRUE);
+////        userParent.get().setFriendRequest(Boolean.TRUE);
+////
+////        Set<User> listUserChild = userParent.get().getUserChild();
+////        Set<User> listUserParent = userChild.get().getUserParent();
+////
+////        listUserChild.add(userChild.get());
+////        listUserParent.add(userParent.get());
+////
+////        userParent.get().setUserChild(listUserChild);
+////        userChild.get().setUserParent(listUserParent);
+////
+////        userRepository.save(userChild.get());
+////        userRepository.save(userParent.get());
+//
+//        return userParent.get();
+//    }
+//
+//    @Override
+//    public Set<User> getAllUserIsFriend(Long idUserParent) {
+//        Optional<User> userParent = userRepository.findById(idUserParent);
+//        checkUserExists(userParent);
+//
+//        Set<User> userChilds = userParent.get().getUserChild();
+//        userChilds.forEach(i -> {
+//            if(i.getFriendRequest() == Boolean.FALSE) {
+//                userChilds.remove(i);
+//            }
+//        });
+//
+//        return userChilds;
+//    }
 
 
     public static void checkUserExists(Optional<User> user) {

@@ -2,6 +2,7 @@ package com.example.strawberry.application.service;
 
 import com.example.strawberry.domain.dto.ResetPasswordDTO;
 import com.example.strawberry.domain.dto.UserDTO;
+import com.example.strawberry.domain.entity.Group;
 import com.example.strawberry.domain.entity.Post;
 import com.example.strawberry.domain.entity.User;
 import com.example.strawberry.domain.entity.UserRegister;
@@ -16,15 +17,22 @@ public interface IUserService {
     User login(UserDTO userDTO);
     List<User> findAllUsers();
     UserRegister registerUser(UserDTO userDTO);
-    User activeUser(Long id, String code);
     UserRegister resendCode(Long id);
-    User forgetPassword(Long id);
-    User resetPassword(Long id, ResetPasswordDTO resetPasswordDTO);
+    User activeUser(Long id, String code);
+    User forgetPassword(String email);
+    User changePassword(Long id, ResetPasswordDTO resetPasswordDTO);
     User updateUserById(Long id, UserDTO userDTO);
     User deleteUserById(Long id);
     User updateAvatarById(Long id, MultipartFile avatar) throws IOException;
+
     Set<Post> getAllPostById(Long id);
     Set<Post> getAllPostByAccess(Long idUser, int access);
 
+    Set<Group> getAllGroupByIdUser(Long idUser);
+
+//    User requestAddFriend(Long idUserParent, Long idUserChild);
+//    User acceptAddFriend(Long idUserParent, Long idUserChild);
+//
+//    Set<User> getAllUserIsFriend(Long idUserParent);
 
 }

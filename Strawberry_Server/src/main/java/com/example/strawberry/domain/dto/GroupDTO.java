@@ -5,11 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-public class ResetPasswordDTO {
-    private String oldPassword;
-    private String newPassword;
+@AllArgsConstructor
+@NoArgsConstructor
+public class GroupDTO {
+
+    private String name;
+    private int access;
+
 }

@@ -2,6 +2,7 @@ package com.example.strawberry.adapter.web.v1.controller;
 
 import com.example.strawberry.adapter.web.base.VsResponseUtil;
 import com.example.strawberry.application.service.IUserService;
+//import com.example.strawberry.domain.dto.ResetPasswordDTO;
 import com.example.strawberry.domain.dto.ResetPasswordDTO;
 import com.example.strawberry.domain.dto.UserDTO;
 import io.swagger.annotations.ApiOperation;
@@ -57,17 +58,17 @@ public class UserController {
     }
 
     @ApiOperation(value = "Quên mật khẩu.")
-    @GetMapping("/{id}/forget-password")
-    public ResponseEntity<?> forgetPassword(@PathVariable("id") Long id) {
-        return VsResponseUtil.ok(userService.forgetPassword(id));
+    @GetMapping("/forget-password")
+    public ResponseEntity<?> forgetPassword(@RequestParam("email") String email) {
+        return VsResponseUtil.ok(userService.forgetPassword(email));
     }
 
     @ApiOperation(value = "Đặt lại mật khẩu.")
-    @PostMapping("/{id}/reset-password")
-    public ResponseEntity<?> forgetPassword(
+    @PostMapping("/{id}/change-password")
+    public ResponseEntity<?> changePassword(
             @PathVariable("id") Long id,
             @RequestBody ResetPasswordDTO resetPasswordDTO) {
-        return VsResponseUtil.ok(userService.resetPassword(id, resetPasswordDTO));
+        return VsResponseUtil.ok(userService.changePassword(id, resetPasswordDTO));
     }
 
     @ApiOperation(value = "Cập nhật thông tin tài khoản.")
@@ -104,5 +105,41 @@ public class UserController {
     ) {
         return VsResponseUtil.ok(userService.getAllPostByAccess(id, access));
     }
+
+    @ApiOperation(value = "Lấy ra tất cả nhóm của user theo id.")
+    @GetMapping("/{id}/groups")
+    public ResponseEntity<?> getAllGroupByIdUser(@PathVariable Long id) {
+        return VsResponseUtil.ok(userService.getAllGroupByIdUser(id));
+    }
+//
+//    @ApiOperation(value = "Gửi yêu cầu kết bạn")
+//    @GetMapping("/{idParent}/{idChild}/add-friend")
+//    public ResponseEntity<?> requestAddFriend(
+//            @PathVariable("idParent") Long idParent,
+//            @PathVariable("idChild") Long idChild
+//    ) {
+//        return VsResponseUtil.ok(userService.requestAddFriend(idParent, idChild));
+//    }
+//
+//    @ApiOperation(value = "Xác nhận kết bạn")
+//    @GetMapping("/{idParent}/{idChild}/accept-friend")
+//    public ResponseEntity<?> acceptAddFriend(
+//            @PathVariable("idParent") Long idParent,
+//            @PathVariable("idChild") Long idChild
+//    ) {
+//        System.out.println(idParent);
+//        System.out.println(idChild);
+//
+//        return VsResponseUtil.ok(userService.acceptAddFriend(idParent, idChild));
+//    }
+//
+//    @ApiOperation(value = "Xem danh sách bạn bè")
+//    @GetMapping("/{idParent}/friends")
+//    public ResponseEntity<?> acceptAddFriend(
+//            @PathVariable("idParent") Long idParent
+//    ) {
+//        return VsResponseUtil.ok(userService.getAllUserIsFriend(idParent));
+//    }
+
 
 }
