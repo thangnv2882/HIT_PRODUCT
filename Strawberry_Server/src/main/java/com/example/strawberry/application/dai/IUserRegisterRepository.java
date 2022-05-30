@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface IUserRegisterRepository extends JpaRepository<UserRegister, Long> {
     List<UserRegister> findAllByStatusIs(Boolean status);
+    UserRegister findByEmailOrPhoneNumber(String email, String phoneNumber);
 }

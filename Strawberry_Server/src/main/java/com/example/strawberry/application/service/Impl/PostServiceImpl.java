@@ -52,7 +52,6 @@ public class PostServiceImpl implements IPostService {
 //        post.setSlugPost(slg.slugify(postDTO.getContentPost()));
 
         setMediaToPost(post, fileImages, fileVideos);
-
         postRepository.save(post);
         return post;
     }
