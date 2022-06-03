@@ -7,6 +7,7 @@ import com.example.strawberry.application.service.IGroupService;
 import com.example.strawberry.config.exception.NotFoundException;
 import com.example.strawberry.domain.dto.GroupDTO;
 import com.example.strawberry.domain.entity.Group;
+import com.example.strawberry.domain.entity.Post;
 import com.example.strawberry.domain.entity.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -97,8 +98,33 @@ public class GroupServiceImpl implements IGroupService {
         return user.get();
     }
 
+    @Override
+    public Set<Post> getAllPostInGroup(Long idGroup, Long idUser) {
+        Optional<User> user = userRepository.findById(idUser);
+        userService.checkUserExists(user);
+        Optional<Group> group = groupRepository.findById(idGroup);
+        checkGroupExists(group);
+        final int[] d = {0};
 
-    public static void checkGroupExists(Optional<Group> group) {
+        Set<Post> posts = group.get().getPosts();
+
+        Set<User> users = group.get().getUsers();
+
+        if(group.get().getAccess() == 0) {
+            users.forEach(i -> {
+                if(i.getId() == user.get().getId()) {
+                    d[0]++;
+                }
+            });
+            if(d[0] == 0) {
+                return new HashSet<>();
+            }
+        }
+        return posts;
+    }
+
+
+    public void checkGroupExists(Optional<Group> group) {
         if (group.isEmpty()) {
             throw new NotFoundException(MessageConstant.GROUP_NOT_EXISTS);
         }

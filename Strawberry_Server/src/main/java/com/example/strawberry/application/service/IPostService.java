@@ -4,9 +4,11 @@ import com.example.strawberry.domain.dto.PostDTO;
 import com.example.strawberry.domain.entity.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Set;
 
 public interface IPostService {
+    Set<Post> getAllPostPublic(int i);
     Post createPost(Long idUser, PostDTO postDTO, MultipartFile[] fileImages, MultipartFile[] fileVideos);
     Post updatePost(Long id, PostDTO postDTO, MultipartFile[] fileImages, MultipartFile[] fileVideos);
     Post deletePostById(Long id);
@@ -19,4 +21,5 @@ public interface IPostService {
 
     Set<Comment> getAllCommentByIdPost(Long idPost);
 
+    Post createPostInGroup(Long idGroup, Long idUser, PostDTO postDTO, MultipartFile[] fileImages, MultipartFile[] fileVideos);
 }

@@ -1,12 +1,12 @@
 package com.example.strawberry.adapter.web.v1.controller;
 
 import com.example.strawberry.adapter.web.base.VsResponseUtil;
+import com.example.strawberry.application.service.IFriendShipService;
 import com.example.strawberry.application.service.IUserService;
 //import com.example.strawberry.domain.dto.ResetPasswordDTO;
 import com.example.strawberry.domain.dto.ResetPasswordDTO;
 import com.example.strawberry.domain.dto.UserDTO;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,15 +18,12 @@ import java.io.IOException;
 @RequestMapping("/api/v1/users")
 public class UserController {
     private final IUserService userService;
+    private final IFriendShipService friendShipService;
 
-    public UserController(IUserService userService) {
+
+    public UserController(IUserService userService, IFriendShipService friendShipService) {
         this.userService = userService;
-    }
-
-    @ApiOperation(value = "Xem tài khoản theo id.")
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getUserById(@PathVariable Long id) {
-        return VsResponseUtil.ok(userService.findUserById(id));
+        this.friendShipService = friendShipService;
     }
 
     @ApiOperation(value = "Xem danh sách tất cả tài khoản.")
@@ -35,6 +32,11 @@ public class UserController {
         return VsResponseUtil.ok(userService.findAllUsers());
     }
 
+    @ApiOperation(value = "Xem tài khoản theo id.")
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+        return VsResponseUtil.ok(userService.findUserById(id));
+    }
 
     @ApiOperation(value = "Đăng ký tài khoản.")
     @PostMapping("/register")
@@ -84,14 +86,14 @@ public class UserController {
     }
 
     @ApiOperation(value = "Cập nhật ảnh đại diện.")
-    @PostMapping("/{id}/avatar")
+    @PostMapping("/{id}/update-avatar")
     public ResponseEntity<?> updateAvatarById(
             @PathVariable("id") Long id,
             @RequestParam(name = "avatar", required = false) MultipartFile avatar) throws IOException {
         return VsResponseUtil.ok(userService.updateAvatarById(id, avatar));
     }
 
-    @ApiOperation(value = "Lấy ra tất cả bài viết của user theo id.")
+    @ApiOperation(value = "Lấy ra tất cả bài viết của user.")
     @GetMapping("/{id}/posts")
     public ResponseEntity<?> getAllPostById(@PathVariable Long id) {
         return VsResponseUtil.ok(userService.getAllPostById(id));
@@ -106,40 +108,23 @@ public class UserController {
         return VsResponseUtil.ok(userService.getAllPostByAccess(id, access));
     }
 
-    @ApiOperation(value = "Lấy ra tất cả nhóm của user theo id.")
+    @ApiOperation(value = "Lấy ra tất cả nhóm của user.")
     @GetMapping("/{id}/groups")
     public ResponseEntity<?> getAllGroupByIdUser(@PathVariable Long id) {
         return VsResponseUtil.ok(userService.getAllGroupByIdUser(id));
     }
-//
-//    @ApiOperation(value = "Gửi yêu cầu kết bạn")
-//    @GetMapping("/{idParent}/{idChild}/add-friend")
-//    public ResponseEntity<?> requestAddFriend(
-//            @PathVariable("idParent") Long idParent,
-//            @PathVariable("idChild") Long idChild
-//    ) {
-//        return VsResponseUtil.ok(userService.requestAddFriend(idParent, idChild));
-//    }
-//
-//    @ApiOperation(value = "Xác nhận kết bạn")
-//    @GetMapping("/{idParent}/{idChild}/accept-friend")
-//    public ResponseEntity<?> acceptAddFriend(
-//            @PathVariable("idParent") Long idParent,
-//            @PathVariable("idChild") Long idChild
-//    ) {
-//        System.out.println(idParent);
-//        System.out.println(idChild);
-//
-//        return VsResponseUtil.ok(userService.acceptAddFriend(idParent, idChild));
-//    }
-//
-//    @ApiOperation(value = "Xem danh sách bạn bè")
-//    @GetMapping("/{idParent}/friends")
-//    public ResponseEntity<?> acceptAddFriend(
-//            @PathVariable("idParent") Long idParent
-//    ) {
-//        return VsResponseUtil.ok(userService.getAllUserIsFriend(idParent));
-//    }
 
+    @ApiOperation(value = "Xem tất cả bạn bè")
+    @GetMapping("/{id}/friends")
+    public ResponseEntity<?> getAllFriend(
+            @PathVariable("id") Long id) {
+        return VsResponseUtil.ok(friendShipService.getAllFriend(id));
+    }
 
+    @ApiOperation(value = "Xem tất cả lời mời kết bạn")
+    @GetMapping("/{id}/friend-requests")
+    public ResponseEntity<?> createCommentForPost(
+            @PathVariable("id") Long id) {
+        return VsResponseUtil.ok(friendShipService.getAllRequestAddFriend(id));
+    }
 }

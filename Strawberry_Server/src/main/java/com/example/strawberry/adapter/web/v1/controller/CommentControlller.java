@@ -1,6 +1,7 @@
 package com.example.strawberry.adapter.web.v1.controller;
 
 import com.example.strawberry.adapter.web.base.VsResponseUtil;
+import com.example.strawberry.application.service.ICommentService;
 import com.example.strawberry.application.service.Impl.CommentServiceImpl;
 import com.example.strawberry.domain.dto.CommentDTO;
 import io.swagger.annotations.ApiOperation;
@@ -15,7 +16,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/comments")
 public class CommentControlller {
 
-    private final CommentServiceImpl commentService;
+    private final ICommentService commentService;
 
     public CommentControlller(CommentServiceImpl commentService) {
         this.commentService = commentService;

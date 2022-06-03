@@ -39,6 +39,10 @@ public class Post extends AbstractAuditingEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinColumn(name = "group_id")
+    private Group group;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "post")
     @JsonIgnore
     private Set<Reaction> reactions = new HashSet<>();

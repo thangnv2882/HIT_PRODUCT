@@ -3,6 +3,8 @@ package com.example.strawberry.adapter.web.base;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Map;
+
 public class VsResponseUtil {
     public static ResponseEntity<RestData<?>> ok(Object data) {
         return ok(HttpStatus.OK, data);

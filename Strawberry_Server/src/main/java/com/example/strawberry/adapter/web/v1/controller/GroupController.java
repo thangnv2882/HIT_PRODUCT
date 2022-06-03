@@ -43,4 +43,12 @@ public class GroupController {
             @PathVariable("idUser") Long idUser) {
         return VsResponseUtil.ok(groupService.addUserToGroup(idGroup, idUser));
     }
+
+    @ApiOperation(value = "Lấy các bài viết trong nhóm.")
+    @GetMapping("/{idGroup}/{idUser}/get-post")
+    public ResponseEntity<?> getAllPostInGroup(
+            @PathVariable("idGroup") Long idGroup,
+            @PathVariable("idUser") Long idUser) {
+        return VsResponseUtil.ok(groupService.getAllPostInGroup(idGroup, idUser));
+    }
 }
