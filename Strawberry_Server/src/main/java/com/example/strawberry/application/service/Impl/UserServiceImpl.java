@@ -3,6 +3,7 @@ package com.example.strawberry.application.service.Impl;
 import com.example.strawberry.application.constants.CommonConstant;
 import com.example.strawberry.application.constants.EmailConstant;
 import com.example.strawberry.application.constants.MessageConstant;
+//import com.example.strawberry.application.dai.IFriendShipRepository;
 import com.example.strawberry.application.dai.IUserRegisterRepository;
 import com.example.strawberry.application.dai.IUserRepository;
 import com.example.strawberry.application.service.ISendMailService;
@@ -14,13 +15,9 @@ import com.example.strawberry.config.exception.NotFoundException;
 //import com.example.strawberry.domain.dto.ResetPasswordDTO;
 import com.example.strawberry.domain.dto.ResetPasswordDTO;
 import com.example.strawberry.domain.dto.UserDTO;
-import com.example.strawberry.domain.entity.Group;
-import com.example.strawberry.domain.entity.Post;
-import com.example.strawberry.domain.entity.User;
-import com.example.strawberry.domain.entity.UserRegister;
+import com.example.strawberry.domain.entity.*;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -113,10 +110,10 @@ public class UserServiceImpl implements IUserService {
     public UserRegister resendCode(Long id) {
         Optional<UserRegister> userRegister = userRegisterRepository.findById(id);
         checkUserRegisterExists(userRegister);
-        RandomStringUtils rand = new RandomStringUtils();
-        String code = rand.randomNumeric(4);
-        userRegister.get().setCode(code);
-        String content = ".YOUR ACTIVATION CODE: " + code
+//        RandomStringUtils rand = new RandomStringUtils();
+//        String code = rand.randomNumeric(4);
+//        userRegister.get().setCode(code);
+        String content = ".YOUR ACTIVATION CODE: " + userRegister.get().getCode()
                 + ".\nThank you for using our service.";
         sendMailService.sendMailWithText(EmailConstant.SUBJECT_ACTIVE, content, userRegister.get().getEmail());
         userRegisterRepository.save(userRegister.get());
@@ -126,13 +123,13 @@ public class UserServiceImpl implements IUserService {
     @Override
     public User forgetPassword(String email) {
         User user = userRepository.findByEmail(email);
-        if(user == null) {
+        if (user == null) {
             throw new NotFoundException(MessageConstant.ACCOUNT_NOT_EXISTS);
         }
         String content = "YOUR PASSWORD: " + user.getPassword()
                 + ".\nThank you for using our service.";
         sendMailService.sendMailWithText(EmailConstant.SUBJECT_NOTIFICATION, content, email);
-        userRepository.save(user);
+//        userRepository.save(user);
         return user;
     }
 
@@ -140,7 +137,7 @@ public class UserServiceImpl implements IUserService {
     public User changePassword(Long id, ResetPasswordDTO resetPasswordDTO) {
         Optional<User> user = userRepository.findById(id);
         checkUserExists(user);
-        if(user.get().getPassword().compareTo(resetPasswordDTO.getOldPassword()) != 0) {
+        if (user.get().getPassword().compareTo(resetPasswordDTO.getOldPassword()) != 0) {
             throw new ExceptionAll("Incorrect password");
         }
         user.get().setPassword(resetPasswordDTO.getNewPassword());
@@ -167,12 +164,11 @@ public class UserServiceImpl implements IUserService {
         Optional<User> user = userRepository.findById(id);
         checkUserExists(user);
         UserRegister userRegister = modelMapper.map(userDTO, UserRegister.class);
-        if(isEmailOrPhoneNumberExists(userRegister)) {
+        if (isEmailOrPhoneNumberExists(userRegister)) {
             throw new DuplicateException("Thông tin đã tồn tại.");
         }
         modelMapper.map(userDTO, user.get());
 //        user.get().setPassword(passwordEncoder.encode(userDTO.getPassword()));
-//        user.get().setPassword(userDTO.getPassword());
         return userRepository.save(user.get());
     }
 
@@ -188,7 +184,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public User updateAvatarById(Long id, MultipartFile avatar) throws IOException{
+    public User updateAvatarById(Long id, MultipartFile avatar) throws IOException {
         Optional<User> user = userRepository.findById(id);
         checkUserExists(user);
         if (user.get().getLinkAvt() != null) {
@@ -205,7 +201,7 @@ public class UserServiceImpl implements IUserService {
         Optional<User> user = userRepository.findById(id);
         checkUserExists(user);
         Set<Post> posts = user.get().getPosts();
-        return posts;
+        return getAllPostNotInGroup(posts);
     }
 
     @Override
@@ -215,11 +211,11 @@ public class UserServiceImpl implements IUserService {
         Set<Post> posts = user.get().getPosts();
         Set<Post> postsEnd = new HashSet<>();
         posts.forEach(post -> {
-            if(post.getAccess() == access) {
+            if (post.getAccess() == access) {
                 postsEnd.add(post);
             }
         });
-        return postsEnd;
+        return getAllPostNotInGroup(postsEnd);
     }
 
     @Override
@@ -229,68 +225,8 @@ public class UserServiceImpl implements IUserService {
         Set<Group> groups = user.get().getGroups();
         return groups;
     }
-//
-//    @Override
-//    public User requestAddFriend(Long idUserParent, Long idUserChild) {
-//        Optional<User> userParent = userRepository.findById(idUserParent);
-//        checkUserExists(userParent);
-//        Optional<User> userChild = userRepository.findById(idUserChild);
-//        checkUserExists(userChild);
-//
-//        userChild.get().setFriendRequest(Boolean.FALSE);
-//        userParent.get().setFriendRequest(Boolean.FALSE);
-//
-//        userRepository.save(userChild.get());
-//        userRepository.save(userParent.get());
-//
-//        return userParent.get();
-//    }
-//
-//    @Override
-//    public User acceptAddFriend(Long idUserParent, Long idUserChild) {
-//        Optional<User> userParent = userRepository.findById(idUserParent);
-//        checkUserExists(userParent);
-//        Optional<User> userChild = userRepository.findById(idUserChild);
-//        checkUserExists(userChild);
-//
-//        System.out.println(userParent.get().getEmail());
-//        System.out.println(userChild.get().getEmail());
-////
-////        userChild.get().setFriendRequest(Boolean.TRUE);
-////        userParent.get().setFriendRequest(Boolean.TRUE);
-////
-////        Set<User> listUserChild = userParent.get().getUserChild();
-////        Set<User> listUserParent = userChild.get().getUserParent();
-////
-////        listUserChild.add(userChild.get());
-////        listUserParent.add(userParent.get());
-////
-////        userParent.get().setUserChild(listUserChild);
-////        userChild.get().setUserParent(listUserParent);
-////
-////        userRepository.save(userChild.get());
-////        userRepository.save(userParent.get());
-//
-//        return userParent.get();
-//    }
-//
-//    @Override
-//    public Set<User> getAllUserIsFriend(Long idUserParent) {
-//        Optional<User> userParent = userRepository.findById(idUserParent);
-//        checkUserExists(userParent);
-//
-//        Set<User> userChilds = userParent.get().getUserChild();
-//        userChilds.forEach(i -> {
-//            if(i.getFriendRequest() == Boolean.FALSE) {
-//                userChilds.remove(i);
-//            }
-//        });
-//
-//        return userChilds;
-//    }
 
-
-    public static void checkUserExists(Optional<User> user) {
+    public void checkUserExists(Optional<User> user) {
         if (user.isEmpty()) {
             throw new NotFoundException(MessageConstant.ACCOUNT_NOT_EXISTS);
         }
@@ -317,15 +253,26 @@ public class UserServiceImpl implements IUserService {
                 }
             }
         });
-        if(d[0] != 0) {
+        if (d[0] != 0) {
             return true;
         }
         return false;
     }
 
-    public static void checkUserRegisterExists(Optional<UserRegister> userRegister) {
+    public void checkUserRegisterExists(Optional<UserRegister> userRegister) {
         if (userRegister.isEmpty()) {
             throw new NotFoundException(MessageConstant.ACCOUNT_NOT_EXISTS);
         }
     }
+
+    public Set<Post> getAllPostNotInGroup(Set<Post> posts) {
+        Set<Post> postEnd = new HashSet<>();
+        posts.forEach(i -> {
+            if (i.getGroup() == null) {
+                postEnd.add(i);
+            }
+        });
+        return postEnd;
+    }
+
 }

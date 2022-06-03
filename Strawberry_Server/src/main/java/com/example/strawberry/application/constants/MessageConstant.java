@@ -8,4 +8,6 @@ public class MessageConstant {
     public static String REACTION_NOT_EXISTS = "Reaction not exists.";
     public static String COMMENT_NOT_EXISTS = "Comment not exists.";
 
+    public static String USER_NOT_IN_GROUP = "User not in group";
+
 }

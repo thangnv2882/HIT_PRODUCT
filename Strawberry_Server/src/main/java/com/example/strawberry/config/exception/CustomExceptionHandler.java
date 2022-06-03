@@ -1,19 +1,14 @@
 package com.example.strawberry.config.exception;
 
-import com.example.strawberry.adapter.web.base.RestData;
-import com.example.strawberry.adapter.web.base.VsResponseUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.cloudinary.json.JSONObject;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,15 +34,15 @@ public class CustomExceptionHandler {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
     }
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<RestData<?>> handleValidException(BindException ex, WebRequest req) {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponseMap handleValidException(BindException ex, WebRequest req) {
         List<FieldError> errors = ex.getBindingResult().getFieldErrors();
-
-        Map<String, String> map = new HashMap<>();
+//
+        Map<String, String> error = new HashMap<>();
         errors.forEach(i -> {
-            map.put(i.getField(), i.getDefaultMessage());
+            error.put(i.getField(), i.getDefaultMessage());
         });
 
-        return VsResponseUtil.error(HttpStatus.BAD_REQUEST, map);
+        return new ErrorResponseMap(HttpStatus.BAD_REQUEST.value(), error);
     }
-
 }

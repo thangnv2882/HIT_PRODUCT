@@ -76,7 +76,7 @@ public class CommentServiceImpl implements ICommentService {
         return comments;
     }
 
-    public static void checkCommentExists(Optional<Comment> comment) {
+    public void checkCommentExists(Optional<Comment> comment) {
         if (comment.isEmpty()) {
             throw new NotFoundException(MessageConstant.COMMENT_NOT_EXISTS);
         }

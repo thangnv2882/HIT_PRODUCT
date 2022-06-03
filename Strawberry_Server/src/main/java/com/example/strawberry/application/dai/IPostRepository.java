@@ -11,6 +11,5 @@ import java.util.Set;
 
 @Repository
 public interface IPostRepository extends JpaRepository<Post, Long> {
-    //    List<Post> findAllByIdUser
-
+    Set<Post> findAllByAccess(int access);
 }

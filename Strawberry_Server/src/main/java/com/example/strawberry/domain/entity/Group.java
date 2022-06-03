@@ -28,4 +28,8 @@ public class Group extends AbstractAuditingEntity{
     @JsonIgnore
     private Set<User> users = new HashSet<>();
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "group")
+    @JsonIgnore
+    private Set<Post> posts = new HashSet<>();
+
 }

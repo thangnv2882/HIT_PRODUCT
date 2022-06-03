@@ -2,10 +2,7 @@ package com.example.strawberry.application.service;
 
 import com.example.strawberry.domain.dto.ResetPasswordDTO;
 import com.example.strawberry.domain.dto.UserDTO;
-import com.example.strawberry.domain.entity.Group;
-import com.example.strawberry.domain.entity.Post;
-import com.example.strawberry.domain.entity.User;
-import com.example.strawberry.domain.entity.UserRegister;
+import com.example.strawberry.domain.entity.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -29,10 +26,5 @@ public interface IUserService {
     Set<Post> getAllPostByAccess(Long idUser, int access);
 
     Set<Group> getAllGroupByIdUser(Long idUser);
-
-//    User requestAddFriend(Long idUserParent, Long idUserChild);
-//    User acceptAddFriend(Long idUserParent, Long idUserChild);
-//
-//    Set<User> getAllUserIsFriend(Long idUserParent);
 
 }

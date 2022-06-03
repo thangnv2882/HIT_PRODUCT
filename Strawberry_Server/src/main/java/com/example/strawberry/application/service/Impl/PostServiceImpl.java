@@ -9,13 +9,12 @@ import com.example.strawberry.domain.dto.PostDTO;
 import com.example.strawberry.domain.entity.*;
 import com.github.slugify.Slugify;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -24,23 +23,32 @@ public class PostServiceImpl implements IPostService {
 
     private final IPostRepository postRepository;
     private final IUserRepository userRepository;
+    private final IGroupRepository groupRepository;
     private final IImageRepository imageRepository;
     private final IVideoRepository videoRepository;
     private final IReactionRepository reactionRepository;
     private final UserServiceImpl userService;
+    private final GroupServiceImpl groupService;
     private final ModelMapper modelMapper;
     private final UploadFile uploadFile;
     private Slugify slg = new Slugify();
 
-    public PostServiceImpl(IPostRepository postRepository, IUserRepository userRepository, IImageRepository imageRepository, IVideoRepository videoRepository, IReactionRepository reactionRepository, UserServiceImpl userService, ModelMapper modelMapper, UploadFile uploadFile) {
+    public PostServiceImpl(IPostRepository postRepository, IUserRepository userRepository, IGroupRepository groupRepository, IImageRepository imageRepository, IVideoRepository videoRepository, IReactionRepository reactionRepository, UserServiceImpl userService, GroupServiceImpl groupService, ModelMapper modelMapper, UploadFile uploadFile) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
+        this.groupRepository = groupRepository;
         this.imageRepository = imageRepository;
         this.videoRepository = videoRepository;
         this.reactionRepository = reactionRepository;
         this.userService = userService;
+        this.groupService = groupService;
         this.modelMapper = modelMapper;
         this.uploadFile = uploadFile;
+    }
+
+    @Override
+    public Set<Post> getAllPostPublic(int access) {
+        return postRepository.findAllByAccess(access);
     }
 
     @Override
@@ -123,6 +131,32 @@ public class PostServiceImpl implements IPostService {
         return comments;
     }
 
+    @Override
+    public Post createPostInGroup(Long idGroup, Long idUser, PostDTO postDTO, MultipartFile[] fileImages, MultipartFile[] fileVideos) {
+        Optional<Group> group = groupRepository.findById(idGroup);
+        groupService.checkGroupExists(group);
+        Optional<User> user = userRepository.findById(idUser);
+        userService.checkUserExists(user);
+
+        final int[] d = {0};
+        Set<User> users = group.get().getUsers();
+        users.forEach(i -> {
+            if(i.getId() == user.get().getId()) {
+                d[0]++;
+            }
+        });
+        if(d[0] == 0) {
+            throw new NotFoundException(MessageConstant.USER_NOT_IN_GROUP);
+        }
+
+        Post post = modelMapper.map(postDTO, Post.class);
+        post.setUser(user.get());
+        post.setGroup(group.get());
+
+        setMediaToPost(post, fileImages, fileVideos);
+        postRepository.save(post);
+        return post;
+    }
 
 
     public void checkPostExists(Optional<Post> post) {
@@ -131,7 +165,7 @@ public class PostServiceImpl implements IPostService {
         }
     }
 
-    public static void checkReactionExists(Optional<Reaction> reaction) {
+    public void checkReactionExists(Optional<Reaction> reaction) {
         if (reaction.isEmpty()) {
             throw new NotFoundException(MessageConstant.REACTION_NOT_EXISTS);
         }

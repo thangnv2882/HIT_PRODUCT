@@ -19,14 +19,34 @@ public class PostController {
         this.postService = postService;
     }
 
-    @ApiOperation(value = "Đăng bài")
+    @ApiOperation(value = "Lấy ra tất cả bài post công khai.")
+    @GetMapping("/get-all")
+    public ResponseEntity<?> getAllPost() {
+        return VsResponseUtil.ok(postService.getAllPostPublic(2));
+    }
+
+    @ApiOperation(value = "Đăng bài trên tường")
     @PostMapping("/{idUser}/create-post")
     public ResponseEntity<?> createPost(
             @PathVariable("idUser") Long id,
             @ModelAttribute PostDTO postDTO,
             @RequestParam(name = "fileImages", required = false) MultipartFile[] fileImages,
             @RequestParam(name = "fileVideos", required = false) MultipartFile[] fileVideos) {
+        System.out.println("aaa");
         return VsResponseUtil.ok(postService.createPost(id, postDTO, fileImages, fileVideos));
+    }
+
+    @ApiOperation(value = "Đăng bài trong nhóm")
+    @PostMapping("/{idGroup}/{idUser}/create-post-in-group")
+    public ResponseEntity<?> createPost(
+            @PathVariable("idGroup") Long idGroup,
+            @PathVariable("idUser") Long idUser,
+            @ModelAttribute PostDTO postDTO,
+            @RequestParam(name = "fileImages", required = false) MultipartFile[] fileImages,
+            @RequestParam(name = "fileVideos", required = false) MultipartFile[] fileVideos) {
+        System.out.println("hehe");
+
+        return VsResponseUtil.ok(postService.createPostInGroup(idGroup, idUser, postDTO, fileImages, fileVideos));
     }
 
     @ApiOperation(value = "Chỉnh sửa bài đăng")
