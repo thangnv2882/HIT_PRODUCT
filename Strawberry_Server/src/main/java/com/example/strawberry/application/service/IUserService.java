@@ -26,5 +26,7 @@ public interface IUserService {
     Set<Post> getAllPostByAccess(Long idUser, int access);
 
     Set<Group> getAllGroupByIdUser(Long idUser);
+    Set<Image> getAllImage(Long idUser);
+    Set<Video> getAllVideo(Long idUser);
 
 }

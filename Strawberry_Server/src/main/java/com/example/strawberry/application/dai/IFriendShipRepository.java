@@ -1,7 +1,6 @@
 package com.example.strawberry.application.dai;
 
 import com.example.strawberry.domain.entity.FriendShip;
-import com.example.strawberry.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -27,8 +26,12 @@ public interface IFriendShipRepository extends JpaRepository<FriendShip, Long> {
     FriendShip findFriendShipByUserReceiverIdAndUserSenderId(Long idUserReceiver, Long idUserSender);
 
 
-    @Query("select f from FriendShip f " +
-            "where (f.userSender.id = 1 and f.userReceiver.id = 2) or (f.userReceiver.id = 3 and f.userSender.id = 4)")
-    FriendShip findFriendShipSendOrReceive(Long idUserSender1, Long idUserReceiver1, Long idUserReceiver2, Long idUserSender2);
+    @Query("select f from FriendShip f where f.userSender.id = ?1 and f.userReceiver.id = ?2 and f.isAccept = ?3")
+    FriendShip findFriendShipByUserSenderIdAndUserReceiverIdAndIsAccept(Long idUserSender, Long idUserReceiver, Boolean boolen);
+
+
+//    @Query("select f from FriendShip f " +
+//            "where (f.userSender.id = 1 and f.userReceiver.id = 2) or (f.userSender.id = 2 and f.userReceiver.id = 1)")
+//    FriendShip findFriendShipSendOrReceive(Long idUserSender1, Long idUserReceiver1);
 
 }

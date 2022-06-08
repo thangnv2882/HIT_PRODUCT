@@ -1,5 +1,6 @@
 package com.example.strawberry.domain.entity;
 
+import com.example.strawberry.adapter.web.base.ReactionType;
 import com.example.strawberry.domain.entity.base.AbstractAuditingEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,17 +37,21 @@ public class Post extends AbstractAuditingEntity {
 //    @NotBlank
     private int access;
 
+    private Long likes = 0L;
+    private Long dislikes = 0L;
+
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "post")
+    @JsonIgnore
+    private Set<Reaction> reactions = new HashSet<>();
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id")
     private Group group;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "post")
-    @JsonIgnore
-    private Set<Reaction> reactions = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "post")
     @JsonIgnore
@@ -58,4 +64,5 @@ public class Post extends AbstractAuditingEntity {
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "post")
     @JsonIgnore
     private Set<Comment> comments = new HashSet<>();
+
 }

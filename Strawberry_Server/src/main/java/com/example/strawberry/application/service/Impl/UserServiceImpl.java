@@ -3,7 +3,7 @@ package com.example.strawberry.application.service.Impl;
 import com.example.strawberry.application.constants.CommonConstant;
 import com.example.strawberry.application.constants.EmailConstant;
 import com.example.strawberry.application.constants.MessageConstant;
-//import com.example.strawberry.application.dai.IFriendShipRepository;
+import com.example.strawberry.application.dai.IPostRepository;
 import com.example.strawberry.application.dai.IUserRegisterRepository;
 import com.example.strawberry.application.dai.IUserRepository;
 import com.example.strawberry.application.service.ISendMailService;
@@ -12,36 +12,30 @@ import com.example.strawberry.application.utils.UploadFile;
 import com.example.strawberry.config.exception.DuplicateException;
 import com.example.strawberry.config.exception.ExceptionAll;
 import com.example.strawberry.config.exception.NotFoundException;
-//import com.example.strawberry.domain.dto.ResetPasswordDTO;
 import com.example.strawberry.domain.dto.ResetPasswordDTO;
 import com.example.strawberry.domain.dto.UserDTO;
 import com.example.strawberry.domain.entity.*;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements IUserService {
 
-//    @Autowired
-//    private PasswordEncoder passwordEncoder;
-
     private final IUserRepository userRepository;
     private final IUserRegisterRepository userRegisterRepository;
+    private final IPostRepository postRepository;
     private final ModelMapper modelMapper;
     private final ISendMailService sendMailService;
     private final UploadFile uploadFile;
 
-    public UserServiceImpl(IUserRepository userRepository, IUserRegisterRepository userRegisterRepository, ModelMapper modelMapper, ISendMailService sendMailService, UploadFile uploadFile) {
+    public UserServiceImpl(IUserRepository userRepository, IUserRegisterRepository userRegisterRepository, IPostRepository postRepository, ModelMapper modelMapper, ISendMailService sendMailService, UploadFile uploadFile) {
         this.userRepository = userRepository;
         this.userRegisterRepository = userRegisterRepository;
+        this.postRepository = postRepository;
         this.modelMapper = modelMapper;
         this.sendMailService = sendMailService;
         this.uploadFile = uploadFile;
@@ -73,8 +67,8 @@ public class UserServiceImpl implements IUserService {
     public UserRegister registerUser(UserDTO userDTO) {
         UserRegister userRegister = modelMapper.map(userDTO, UserRegister.class);
         if (!isEmailOrPhoneNumberExists(userRegister)) {
-            RandomStringUtils rand = new RandomStringUtils();
-            String code = rand.randomNumeric(4);
+            Random random = new Random();
+            String code = Integer.toString(random.nextInt(9999));
             userRegister.setCode(code);
             String content = EmailConstant.CONTENT
                     + "\nThis is your account information:"
@@ -110,9 +104,6 @@ public class UserServiceImpl implements IUserService {
     public UserRegister resendCode(Long id) {
         Optional<UserRegister> userRegister = userRegisterRepository.findById(id);
         checkUserRegisterExists(userRegister);
-//        RandomStringUtils rand = new RandomStringUtils();
-//        String code = rand.randomNumeric(4);
-//        userRegister.get().setCode(code);
         String content = ".YOUR ACTIVATION CODE: " + userRegister.get().getCode()
                 + ".\nThank you for using our service.";
         sendMailService.sendMailWithText(EmailConstant.SUBJECT_ACTIVE, content, userRegister.get().getEmail());
@@ -129,7 +120,6 @@ public class UserServiceImpl implements IUserService {
         String content = "YOUR PASSWORD: " + user.getPassword()
                 + ".\nThank you for using our service.";
         sendMailService.sendMailWithText(EmailConstant.SUBJECT_NOTIFICATION, content, email);
-//        userRepository.save(user);
         return user;
     }
 
@@ -144,32 +134,22 @@ public class UserServiceImpl implements IUserService {
         return user.get();
     }
 
-//    @Override
-//    public User resetPassword(ResetPasswordDTO resetPasswordDTO) {
-//        User user = userRepository.findByEmail(resetPasswordDTO.getEmail());
-//        if(user == null) {
-//            throw new NotFoundException(MessageConstant.ACCOUNT_NOT_EXISTS);
-//        }
-//        if (user.getCode().compareTo(resetPasswordDTO.getCode()) == 0) {
-//            user.setCode(null);
-//            user.setPassword(resetPasswordDTO.getNewPassword());
-//            userRepository.save(user);
-//            return user;
-//        }
-//        throw new ExceptionAll(MessageConstant.ACTIVE_FALSE);
-//    }
-
     @Override
     public User updateUserById(Long id, UserDTO userDTO) {
         Optional<User> user = userRepository.findById(id);
         checkUserExists(user);
-        UserRegister userRegister = modelMapper.map(userDTO, UserRegister.class);
-        if (isEmailOrPhoneNumberExists(userRegister)) {
+        UserRegister userRegisterOriginal = userRegisterRepository.findByEmailOrPhoneNumber(user.get().getEmail(), user.get().getPhoneNumber());
+        UserRegister userRegisterNew = modelMapper.map(userDTO, UserRegister.class);
+        if (isEmailOrPhoneNumberExists(userRegisterNew)) {
             throw new DuplicateException("Thông tin đã tồn tại.");
         }
         modelMapper.map(userDTO, user.get());
+        modelMapper.map(userRegisterNew, userRegisterOriginal);
+        userRegisterOriginal.setStatus(Boolean.TRUE);
+        userRegisterRepository.save(userRegisterOriginal);
+        userRepository.save(user.get());
 //        user.get().setPassword(passwordEncoder.encode(userDTO.getPassword()));
-        return userRepository.save(user.get());
+        return user.get();
     }
 
     @Override
@@ -197,8 +177,8 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public Set<Post> getAllPostById(Long id) {
-        Optional<User> user = userRepository.findById(id);
+    public Set<Post> getAllPostById(Long idUser) {
+        Optional<User> user = userRepository.findById(idUser);
         checkUserExists(user);
         Set<Post> posts = user.get().getPosts();
         return getAllPostNotInGroup(posts);
@@ -216,6 +196,11 @@ public class UserServiceImpl implements IUserService {
             }
         });
         return getAllPostNotInGroup(postsEnd);
+
+//        Optional<User> user = userRepository.findById(idUser);
+//        checkUserExists(user);
+//        Set<Post> posts = postRepository.findByUserAndGroupAndAccess(user.get(), null, access);
+//        return posts;
     }
 
     @Override
@@ -226,6 +211,35 @@ public class UserServiceImpl implements IUserService {
         return groups;
     }
 
+    @Override
+    public Set<Image> getAllImage(Long idUser) {
+        Optional<User> user = userRepository.findById(idUser);
+        checkUserExists(user);
+        Set<Post> posts = user.get().getPosts();
+        Set<Image> images = new HashSet<>();
+
+        posts.forEach(post -> {
+            post.getImages().forEach(image -> {
+                images.add(image);
+            });
+        });
+        return images;
+    }
+
+    @Override
+    public Set<Video> getAllVideo(Long idUser) {
+        Optional<User> user = userRepository.findById(idUser);
+        checkUserExists(user);
+        Set<Post> posts = user.get().getPosts();
+        Set<Video> videos = new HashSet<>();
+        posts.forEach(post -> {
+            post.getVideos().forEach(video -> {
+                videos.add(video);
+            });
+        });
+        return videos;
+    }
+
     public void checkUserExists(Optional<User> user) {
         if (user.isEmpty()) {
             throw new NotFoundException(MessageConstant.ACCOUNT_NOT_EXISTS);
@@ -234,7 +248,6 @@ public class UserServiceImpl implements IUserService {
 
     public Boolean isEmailOrPhoneNumberExists(UserRegister userRegister) {
         List<UserRegister> userRegisters = userRegisterRepository.findAll();
-        final int[] d = {0};
         userRegisters.forEach(user -> {
             if (user.getStatus() == Boolean.TRUE) {
                 if (user.getEmail().compareTo(userRegister.getEmail()) == 0) {
@@ -245,16 +258,13 @@ public class UserServiceImpl implements IUserService {
                 }
             }
         });
-        userRegisters.forEach(user -> {
+        for(UserRegister user : userRegisters) {
             if (user.getStatus() == Boolean.FALSE) {
                 if (user.getEmail().compareTo(userRegister.getEmail()) == 0
                         || user.getPhoneNumber().compareTo(userRegister.getPhoneNumber()) == 0) {
-                    d[0]++;
+                    return true;
                 }
             }
-        });
-        if (d[0] != 0) {
-            return true;
         }
         return false;
     }
@@ -264,7 +274,7 @@ public class UserServiceImpl implements IUserService {
             throw new NotFoundException(MessageConstant.ACCOUNT_NOT_EXISTS);
         }
     }
-
+//
     public Set<Post> getAllPostNotInGroup(Set<Post> posts) {
         Set<Post> postEnd = new HashSet<>();
         posts.forEach(i -> {
