@@ -1,6 +1,7 @@
 package com.example.strawberry.application.service;
 
 import com.example.strawberry.domain.dto.PostDTO;
+import com.example.strawberry.domain.dto.ReactionDTO;
 import com.example.strawberry.domain.entity.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,10 +17,11 @@ public interface IPostService {
     Set<Image> getAllImageById(Long id);
     Set<Video> getAllVideoById(Long id);
 
-    Reaction setReactByIdPost(Long idPost, Long idReation);
-    Set<Reaction> getAllReactionByIdPost(Long idPost);
+//    Post setReactByIdPost(ReactionDTO reactionDTO);
+//    Set<Reaction> getAllReactionByIdPost(Long idPost);
 
     Set<Comment> getAllCommentByIdPost(Long idPost);
 
     Post createPostInGroup(Long idGroup, Long idUser, PostDTO postDTO, MultipartFile[] fileImages, MultipartFile[] fileVideos);
+
 }

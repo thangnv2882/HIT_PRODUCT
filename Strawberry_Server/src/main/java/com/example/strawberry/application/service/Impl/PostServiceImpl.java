@@ -6,6 +6,7 @@ import com.example.strawberry.application.service.IPostService;
 import com.example.strawberry.application.utils.UploadFile;
 import com.example.strawberry.config.exception.NotFoundException;
 import com.example.strawberry.domain.dto.PostDTO;
+import com.example.strawberry.domain.dto.ReactionDTO;
 import com.example.strawberry.domain.entity.*;
 import com.github.slugify.Slugify;
 import org.modelmapper.ModelMapper;
@@ -14,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -57,70 +57,43 @@ public class PostServiceImpl implements IPostService {
         userService.checkUserExists(user);
         Post post = modelMapper.map(postDTO, Post.class);
         post.setUser(user.get());
-//        post.setSlugPost(slg.slugify(postDTO.getContentPost()));
-
         setMediaToPost(post, fileImages, fileVideos);
         postRepository.save(post);
         return post;
     }
 
     @Override
-    public Post updatePost(Long id, PostDTO postDTO, MultipartFile[] fileImages, MultipartFile[] fileVideos) {
-        Optional<Post> post = postRepository.findById(id);
+    public Post updatePost(Long idPost, PostDTO postDTO, MultipartFile[] fileImages, MultipartFile[] fileVideos) {
+        Optional<Post> post = postRepository.findById(idPost);
         checkPostExists(post);
         modelMapper.map(postDTO, post.get());
-//        post.get().setSlugPost(slg.slugify(postDTO.getContentPost()));
         setMediaToPost(post.get(), fileImages, fileVideos);
-
         postRepository.save(post.get());
         return post.get();
     }
 
     @Override
-    public Post deletePostById(Long id) {
-        Optional<Post> post = postRepository.findById(id);
+    public Post deletePostById(Long idPost) {
+        Optional<Post> post = postRepository.findById(idPost);
         checkPostExists(post);
         postRepository.delete(post.get());
         return post.get();
     }
 
-
     @Override
-    public Set<Image> getAllImageById(Long id) {
-        Set<Image> images = postRepository.findById(id).get().getImages();
+    public Set<Image> getAllImageById(Long idPost) {
+        Optional<Post> post = postRepository.findById(idPost);
+        checkPostExists(post);
+        Set<Image> images = postRepository.findById(idPost).get().getImages();
         return images;
     }
 
     @Override
-    public Set<Video> getAllVideoById(Long id) {
-        Set<Video> videos = postRepository.findById(id).get().getVideos();
+    public Set<Video> getAllVideoById(Long idPost) {
+        Optional<Post> post = postRepository.findById(idPost);
+        checkPostExists(post);
+        Set<Video> videos = postRepository.findById(idPost).get().getVideos();
         return videos;
-    }
-
-    @Override
-    public Reaction setReactByIdPost(Long idPost, Long idReation) {
-        Optional<Post> post = postRepository.findById(idPost);
-        checkPostExists(post);
-        Set<Reaction> reactions = post.get().getReactions();
-        Optional<Reaction> reaction = reactionRepository.findById(idReation);
-
-//
-        reactions.add(reaction.get());
-        post.get().setReactions(reactions);
-        reactions.forEach(i -> {
-            System.out.println(i.getId());
-        });
-//        postRepository.save(post.get());
-//        return reaction.get();
-        return null;
-    }
-
-    @Override
-    public Set<Reaction> getAllReactionByIdPost(Long idPost) {
-        Optional<Post> post = postRepository.findById(idPost);
-        checkPostExists(post);
-        Set<Reaction> reactions = post.get().getReactions();
-        return reactions;
     }
 
     @Override
@@ -138,36 +111,25 @@ public class PostServiceImpl implements IPostService {
         Optional<User> user = userRepository.findById(idUser);
         userService.checkUserExists(user);
 
-        final int[] d = {0};
         Set<User> users = group.get().getUsers();
-        users.forEach(i -> {
+        for (User i : users) {
             if(i.getId() == user.get().getId()) {
-                d[0]++;
+                Post post = modelMapper.map(postDTO, Post.class);
+                post.setUser(user.get());
+                post.setGroup(group.get());
+
+                setMediaToPost(post, fileImages, fileVideos);
+                postRepository.save(post);
+                return post;
             }
-        });
-        if(d[0] == 0) {
-            throw new NotFoundException(MessageConstant.USER_NOT_IN_GROUP);
         }
-
-        Post post = modelMapper.map(postDTO, Post.class);
-        post.setUser(user.get());
-        post.setGroup(group.get());
-
-        setMediaToPost(post, fileImages, fileVideos);
-        postRepository.save(post);
-        return post;
+        throw new NotFoundException(MessageConstant.USER_NOT_IN_GROUP);
     }
 
 
     public void checkPostExists(Optional<Post> post) {
         if (post.isEmpty()) {
             throw new NotFoundException(MessageConstant.POST_NOT_EXISTS);
-        }
-    }
-
-    public void checkReactionExists(Optional<Reaction> reaction) {
-        if (reaction.isEmpty()) {
-            throw new NotFoundException(MessageConstant.REACTION_NOT_EXISTS);
         }
     }
 

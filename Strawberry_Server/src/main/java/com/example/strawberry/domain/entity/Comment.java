@@ -43,10 +43,12 @@ public class Comment extends AbstractAuditingEntity {
     @JsonIgnore
     private Set<Image> images = new HashSet<>();
 
+    // Link to comments child
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "commentParent")
     @JsonIgnore
     private Set<Comment> commentChilds = new HashSet<>();
 
+    // Link to comments parent
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "comment_parent_id")
     private Comment commentParent;

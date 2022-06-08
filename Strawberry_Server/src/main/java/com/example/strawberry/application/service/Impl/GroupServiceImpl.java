@@ -13,6 +13,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -31,6 +32,10 @@ public class GroupServiceImpl implements IGroupService {
         this.modelMapper = modelMapper;
     }
 
+    @Override
+    public List<Group> getAllGroup() {
+        return groupRepository.findAll();
+    }
 
     @Override
     public Set<Group> getGroupByAccess(int access) {
@@ -69,7 +74,7 @@ public class GroupServiceImpl implements IGroupService {
     }
 
     @Override
-    public User addUserToGroup(Long idGroup, Long idUser) {
+    public Group addUserToGroup(Long idGroup, Long idUser) {
         Optional<User> user = userRepository.findById(idUser);
         userService.checkUserExists(user);
 
@@ -84,6 +89,7 @@ public class GroupServiceImpl implements IGroupService {
         // set list user vào group
         group.get().setUsers(users);
 
+
         // Lấy ra list group của user
         Set<Group> groups = user.get().getGroups();
         // Thêm group vào list đó
@@ -95,7 +101,7 @@ public class GroupServiceImpl implements IGroupService {
         groupRepository.save(group.get());
         userRepository.save(user.get());
 
-        return user.get();
+        return group.get();
     }
 
     @Override
@@ -104,30 +110,24 @@ public class GroupServiceImpl implements IGroupService {
         userService.checkUserExists(user);
         Optional<Group> group = groupRepository.findById(idGroup);
         checkGroupExists(group);
-        final int[] d = {0};
 
         Set<Post> posts = group.get().getPosts();
-
         Set<User> users = group.get().getUsers();
 
-        if(group.get().getAccess() == 0) {
-            users.forEach(i -> {
-                if(i.getId() == user.get().getId()) {
-                    d[0]++;
+        if (group.get().getAccess() == 0) {
+            for (User i : users) {
+                if (i.getId() == user.get().getId()) {
+                    return posts;
                 }
-            });
-            if(d[0] == 0) {
-                return new HashSet<>();
             }
+            return new HashSet<>();
         }
         return posts;
     }
-
 
     public void checkGroupExists(Optional<Group> group) {
         if (group.isEmpty()) {
             throw new NotFoundException(MessageConstant.GROUP_NOT_EXISTS);
         }
     }
-
 }

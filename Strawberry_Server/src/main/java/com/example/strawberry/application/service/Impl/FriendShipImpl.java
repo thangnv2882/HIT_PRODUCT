@@ -34,7 +34,6 @@ public class FriendShipImpl implements IFriendShipService {
         Set<User> listUser = new HashSet<>();
 
         Set<FriendShip> friendShip1 = friendShipRepository.findAllByUserSenderIdAndIsAccept(id, Boolean.TRUE);
-        System.out.println(friendShip1.size());
         friendShip1.forEach(i -> {
             listUser.add(i.getUserReceiver());
         });
@@ -63,11 +62,10 @@ public class FriendShipImpl implements IFriendShipService {
     public String addFriend(Long idUserSender, Long idUserReceiver) {
         FriendShip friendShip = friendShipRepository.findFriendShipByUserSenderIdAndUserReceiverId(idUserSender, idUserReceiver);
 
-        if(friendShip != null) {
-            if(friendShip.getIsAccept() == Boolean.FALSE) {
+        if (friendShip != null) {
+            if (friendShip.getIsAccept() == Boolean.FALSE) {
                 return "You have already sent a friend request";
-            }
-            else {
+            } else {
                 return "Already friends";
             }
         }
@@ -90,7 +88,7 @@ public class FriendShipImpl implements IFriendShipService {
     @Override
     public String cancelAddFriend(Long idUserSender, Long idUserReceiver) {
         FriendShip friendShip = friendShipRepository.findFriendShipByUserSenderIdAndUserReceiverId(idUserSender, idUserReceiver);
-        if(friendShip != null) {
+        if (friendShip != null) {
             friendShipRepository.delete(friendShip);
             return "Canceled friend request.";
         }
@@ -100,8 +98,8 @@ public class FriendShipImpl implements IFriendShipService {
     @Override
     public String acceptFriend(Long idUserSender, Long idUserReceiver) {
         FriendShip friendShip = friendShipRepository.findFriendShipByUserSenderIdAndUserReceiverId(idUserSender, idUserReceiver);
-        if(friendShip != null) {
-            if(friendShip.getIsAccept() == Boolean.FALSE) {
+        if (friendShip != null) {
+            if (friendShip.getIsAccept() == Boolean.FALSE) {
                 friendShip.setIsAccept(Boolean.TRUE);
                 friendShipRepository.save(friendShip);
                 return "Accept friend request.";
@@ -114,12 +112,15 @@ public class FriendShipImpl implements IFriendShipService {
     @Override
     public String unFriend(Long idUserSender, Long idUserReceiver) {
         FriendShip friendShip = friendShipRepository
-                .findFriendShipSendOrReceive(idUserSender, idUserReceiver, idUserReceiver, idUserSender);
-        if(friendShip != null) {
-            if(friendShip.getIsAccept() == Boolean.TRUE) {
-                friendShipRepository.delete(friendShip);
-                return "Unfriended successfully.";
-            }
+                .findFriendShipByUserSenderIdAndUserReceiverIdAndIsAccept(idUserSender, idUserReceiver, Boolean.TRUE);
+        if (friendShip != null) {
+            friendShipRepository.delete(friendShip);
+            return "Unfriended successfully.";
+        }
+        friendShip = friendShipRepository.findFriendShipByUserSenderIdAndUserReceiverIdAndIsAccept(idUserReceiver, idUserSender, Boolean.TRUE);
+        if (friendShip != null) {
+            friendShipRepository.delete(friendShip);
+            return "Unfriended successfully.";
         }
         return "Unfriend failed.";
     }

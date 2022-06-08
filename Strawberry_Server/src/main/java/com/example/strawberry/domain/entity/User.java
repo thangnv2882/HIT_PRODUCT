@@ -74,13 +74,9 @@ public class User extends AbstractAuditingEntity {
     private Set<Group> groups = new HashSet<>();
 
 
-//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "userRequest")
-//    @JsonIgnore
-//    private Set<FriendShip> friendsRequest;
-//
-//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "userResponse")
-//    @JsonIgnore
-//    private Set<FriendShip> friendsResponse;
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    @JsonIgnore
+    private Set<Reaction> reactions = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {
