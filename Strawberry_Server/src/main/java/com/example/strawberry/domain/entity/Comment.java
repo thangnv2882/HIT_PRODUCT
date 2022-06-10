@@ -28,6 +28,10 @@ public class Comment extends AbstractAuditingEntity {
     private String contentComment;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id")
     private Post post;
 
@@ -43,17 +47,13 @@ public class Comment extends AbstractAuditingEntity {
     @JsonIgnore
     private Set<Image> images = new HashSet<>();
 
-    // Link to comments child
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "commentParent")
     @JsonIgnore
     private Set<Comment> commentChilds = new HashSet<>();
 
-    // Link to comments parent
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "comment_parent_id")
     private Comment commentParent;
-
-
 
 
 }

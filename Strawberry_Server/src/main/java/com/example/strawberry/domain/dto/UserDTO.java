@@ -15,15 +15,15 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class UserDTO {
 
-    @NotBlank(message = "Không được để trống")
+//    @NotBlank(message = "Không được để trống")
     private String firstName;
 
-    @NotBlank(message = "Không được để trống")
+//    @NotBlank(message = "Không được để trống")
     private String lastName;
     private String email;
     private String phoneNumber;
 
-    @NotBlank(message = "Không được để trống")
+//    @NotBlank(message = "Không được để trống")
     private String password;
     private String gender;
     private String address;

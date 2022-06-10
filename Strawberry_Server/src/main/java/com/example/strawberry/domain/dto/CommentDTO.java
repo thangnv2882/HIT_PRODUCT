@@ -15,8 +15,10 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class CommentDTO {
 
-    @NotBlank(message = "Comments cannot be left blank")
-    @Nationalized
-    @Length(max = 20000, message = "")
+//    @NotBlank(message = "Comments cannot be left blank")
+//    @Nationalized
+//    @Length(max = 20000, message = "")
     private String contentComment;
+
+
 }

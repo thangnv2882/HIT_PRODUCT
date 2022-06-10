@@ -66,6 +66,14 @@ public class User extends AbstractAuditingEntity {
     @JsonIgnore
     private Set<Post> posts = new HashSet<>();
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    @JsonIgnore
+    private Set<Comment> comments = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    @JsonIgnore
+    private Set<Reaction> reactions = new HashSet<>();
+
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "user_group",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -73,10 +81,12 @@ public class User extends AbstractAuditingEntity {
     @JsonIgnore
     private Set<Group> groups = new HashSet<>();
 
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "user_room",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "room_id"))
     @JsonIgnore
-    private Set<Reaction> reactions = new HashSet<>();
+    private Set<RoomChat> roomChats = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {

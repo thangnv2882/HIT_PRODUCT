@@ -177,7 +177,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public Set<Post> getAllPostById(Long idUser) {
+    public Set<Post> getAllPostByIdUser(Long idUser) {
         Optional<User> user = userRepository.findById(idUser);
         checkUserExists(user);
         Set<Post> posts = user.get().getPosts();
@@ -185,7 +185,7 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public Set<Post> getAllPostByAccess(Long idUser, int access) {
+    public Set<Post> getAllPostByIdUserAndAccess(Long idUser, int access) {
         Optional<User> user = userRepository.findById(idUser);
         checkUserExists(user);
         Set<Post> posts = user.get().getPosts();
@@ -196,11 +196,6 @@ public class UserServiceImpl implements IUserService {
             }
         });
         return getAllPostNotInGroup(postsEnd);
-
-//        Optional<User> user = userRepository.findById(idUser);
-//        checkUserExists(user);
-//        Set<Post> posts = postRepository.findByUserAndGroupAndAccess(user.get(), null, access);
-//        return posts;
     }
 
     @Override

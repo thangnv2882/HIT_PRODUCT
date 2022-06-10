@@ -7,6 +7,9 @@ public class MessageConstant {
     public static String POST_NOT_EXISTS = "Post not exists.";
     public static String REACTION_NOT_EXISTS = "Reaction not exists.";
     public static String COMMENT_NOT_EXISTS = "Comment not exists.";
+    public static String ROOMCHAT_NOT_EXISTS = "Room chat not exists.";
+    public static String MESSAGE_NOT_EXISTS = "Message not exists.";
+
 
     public static String USER_NOT_IN_GROUP = "User not in group";
 

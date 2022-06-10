@@ -4,6 +4,7 @@ import com.example.strawberry.application.constants.MessageConstant;
 import com.example.strawberry.application.dai.*;
 import com.example.strawberry.application.service.IPostService;
 import com.example.strawberry.application.utils.UploadFile;
+import com.example.strawberry.config.exception.ExceptionAll;
 import com.example.strawberry.config.exception.NotFoundException;
 import com.example.strawberry.domain.dto.PostDTO;
 import com.example.strawberry.domain.dto.ReactionDTO;
@@ -63,9 +64,17 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public Post updatePost(Long idPost, PostDTO postDTO, MultipartFile[] fileImages, MultipartFile[] fileVideos) {
+    public Post updatePost(Long idUserFix, Long idPost, PostDTO postDTO, MultipartFile[] fileImages, MultipartFile[] fileVideos) {
         Optional<Post> post = postRepository.findById(idPost);
         checkPostExists(post);
+
+        Optional<User> userFix = userRepository.findById(idUserFix);
+        userService.checkUserExists(userFix);
+        User userOwns = post.get().getUser();
+        if(userOwns.getId() != userFix.get().getId()) {
+            throw new ExceptionAll("This post is not yours.");
+        }
+
         modelMapper.map(postDTO, post.get());
         setMediaToPost(post.get(), fileImages, fileVideos);
         postRepository.save(post.get());
@@ -73,9 +82,15 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
-    public Post deletePostById(Long idPost) {
+    public Post deletePostById(Long idUserFix, Long idPost) {
         Optional<Post> post = postRepository.findById(idPost);
         checkPostExists(post);
+        Optional<User> userFix = userRepository.findById(idUserFix);
+        userService.checkUserExists(userFix);
+        User userOwns = post.get().getUser();
+        if(userOwns.getId() != userFix.get().getId()) {
+            throw new ExceptionAll("This post is not yours.");
+        }
         postRepository.delete(post.get());
         return post.get();
     }

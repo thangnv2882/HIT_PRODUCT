@@ -5,15 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class GroupDTO {
+public class RoomChatDTO {
 
-    private String name;
-    private int access;
+    private Long idUserBoss;
+    private String nameRoom;
 
 }

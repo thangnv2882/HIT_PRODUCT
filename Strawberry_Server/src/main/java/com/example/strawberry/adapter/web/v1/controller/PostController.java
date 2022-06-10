@@ -50,17 +50,20 @@ public class PostController {
     @ApiOperation(value = "Chỉnh sửa bài đăng")
     @PatchMapping(UrlConstant.Post.DATA_POST_UPDATE_POST)
     public ResponseEntity<?> updatePost(
-            @PathVariable("idPost") Long id,
+            @PathVariable("idUserFix") Long idUserFix,
+            @PathVariable("idPost") Long idPost,
             @ModelAttribute PostDTO postDTO,
             @RequestParam(name = "fileImages", required = false) MultipartFile[] fileImages,
             @RequestParam(name = "fileVideos", required = false) MultipartFile[] fileVideos) {
-        return VsResponseUtil.ok(postService.updatePost(id, postDTO, fileImages, fileVideos));
+        return VsResponseUtil.ok(postService.updatePost(idUserFix, idPost, postDTO, fileImages, fileVideos));
     }
 
     @ApiOperation(value = "Xoá bài đăng")
     @DeleteMapping(UrlConstant.Post.DATA_POST_DELETE_POST)
-    public ResponseEntity<?> deletePost(@PathVariable("idPost") Long idPost) {
-        return VsResponseUtil.ok(postService.deletePostById(idPost));
+    public ResponseEntity<?> deletePost(
+            @PathVariable("idUserFix") Long idUserFix,
+            @PathVariable("idPost") Long idPost) {
+        return VsResponseUtil.ok(postService.deletePostById(idUserFix, idPost));
     }
 
     @ApiOperation(value = "Lấy ra tất cả ảnh của post theo id.")
