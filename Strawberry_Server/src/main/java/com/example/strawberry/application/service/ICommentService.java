@@ -6,11 +6,11 @@ import com.example.strawberry.domain.entity.Comment;
 import java.util.Set;
 
 public interface ICommentService {
-    Comment createCommentForPost(Long idPost, CommentDTO commentDTO);
-    Comment updateCommentForPost(Long idComment, CommentDTO commentDTO);
-    Comment deleteCommentForPost(Long idComment);
+    Comment createCommentForPost(Long idUser, Long idPost, CommentDTO commentDTO);
+    Comment updateCommentForPost(Long idUser, Long idComment, CommentDTO commentDTO);
+    Comment deleteCommentForPost(Long idUser, Long idComment);
 
-    Comment createCommentForComment(Long idCommentParent, CommentDTO commentDTO);
+    Comment createCommentForComment(Long idUser, Long idCommentParent, CommentDTO commentDTO);
     Set<Comment> getAllCommentChild(Long idCommentParent);
 
 

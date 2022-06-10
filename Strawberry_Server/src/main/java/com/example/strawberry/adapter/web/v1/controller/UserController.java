@@ -95,7 +95,7 @@ public class UserController {
     @ApiOperation(value = "Lấy ra tất cả bài viết của user.")
     @GetMapping(UrlConstant.User.DATA_USER_GET_POSTS)
     public ResponseEntity<?> getAllPostById(@PathVariable Long id) {
-        return VsResponseUtil.ok(userService.getAllPostById(id));
+        return VsResponseUtil.ok(userService.getAllPostByIdUser(id));
     }
 
     @ApiOperation(value = "Lấy ra tất cả các bài đăng theo quyền truy cập.")
@@ -104,7 +104,7 @@ public class UserController {
             @PathVariable("idUser") Long id,
             @PathVariable("access") int access
     ) {
-        return VsResponseUtil.ok(userService.getAllPostByAccess(id, access));
+        return VsResponseUtil.ok(userService.getAllPostByIdUserAndAccess(id, access));
     }
 
     @ApiOperation(value = "Lấy ra tất cả nhóm của user.")

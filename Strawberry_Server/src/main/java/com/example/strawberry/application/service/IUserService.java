@@ -22,8 +22,8 @@ public interface IUserService {
     User deleteUserById(Long id);
     User updateAvatarById(Long id, MultipartFile avatar) throws IOException;
 
-    Set<Post> getAllPostById(Long id);
-    Set<Post> getAllPostByAccess(Long idUser, int access);
+    Set<Post> getAllPostByIdUser(Long idUser);
+    Set<Post> getAllPostByIdUserAndAccess(Long idUser, int access);
 
     Set<Group> getAllGroupByIdUser(Long idUser);
     Set<Image> getAllImage(Long idUser);

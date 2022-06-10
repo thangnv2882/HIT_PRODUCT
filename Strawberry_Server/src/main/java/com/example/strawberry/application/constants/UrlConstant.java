@@ -33,8 +33,8 @@ public class UrlConstant {
         public static final String DATA_POST = PRE_FIX;
         public static final String DATA_POST_CREATE_POST = PRE_FIX + "/{idUser}/create-post";
         public static final String DATA_POST_CREATE_IN_GROUP = PRE_FIX + "/{idUser}/{idGroup}/create-post-in-group";
-        public static final String DATA_POST_UPDATE_POST = PRE_FIX + "/{idPost}/update-post";
-        public static final String DATA_POST_DELETE_POST = PRE_FIX + "/{idPost}/delete-post";
+        public static final String DATA_POST_UPDATE_POST = PRE_FIX + "/{idUserFix}/{idPost}/update-post";
+        public static final String DATA_POST_DELETE_POST = PRE_FIX + "/{idUserFix}/{idPost}/delete-post";
         public static final String DATA_POST_GET_IMAGES = PRE_FIX + "/{idPost}/images";
         public static final String DATA_POST_GET_VIDEOS = PRE_FIX + "/{idPost}/videos";
         public static final String DATA_POST_GET_COMMENTS = PRE_FIX + "/{idPost}/comments";
@@ -47,10 +47,10 @@ public class UrlConstant {
 
         private static final String PRE_FIX = "/comments";
         public static final String DATA_COMMENT = PRE_FIX;
-        public static final String DATA_COMMENT_WRITE_IN_POST = PRE_FIX + "/{idPost}/write-comment";
-        public static final String DATA_COMMENT_WRITE_IN_COMMENT = PRE_FIX + "/{idCommentParent}/write-comment-child";
-        public static final String DATA_COMMENT_UPDATE_COMMENT = PRE_FIX + "/{idComment}/update-comment";
-        public static final String DATA_COMMENT_DETETE_COMMENT = PRE_FIX + "/{idComment}/delete-comment";
+        public static final String DATA_COMMENT_WRITE_IN_POST = PRE_FIX + "/{idUser}/{idPost}/write-comment";
+        public static final String DATA_COMMENT_WRITE_IN_COMMENT = PRE_FIX + "/{idUser}/{idCommentParent}/write-comment-child";
+        public static final String DATA_COMMENT_UPDATE_COMMENT = PRE_FIX + "/{idUserFix}/{idComment}/update-comment";
+        public static final String DATA_COMMENT_DETETE_COMMENT = PRE_FIX + "/{idUserFix}/{idComment}/delete-comment";
         public static final String DATA_COMMENT_GET_COMMENT_CHILD = PRE_FIX + "/{idCommentParent}/comments-child";
 
     }
