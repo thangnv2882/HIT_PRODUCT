@@ -72,7 +72,7 @@ public class CommentServiceImpl implements ICommentService {
         Optional<User> userFix = userRepository.findById(idUserFix);
         userService.checkUserExists(userFix);
         User userOwns = comment.get().getUser();
-        if(userOwns.getId() != userFix.get().getId()) {
+        if(userOwns.getIdUser() != userFix.get().getIdUser()) {
             throw new ExceptionAll("This comment is not yours.");
         }
         modelMapper.map(commentDTO, comment.get());

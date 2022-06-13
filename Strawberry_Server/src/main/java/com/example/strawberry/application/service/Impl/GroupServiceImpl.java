@@ -116,7 +116,7 @@ public class GroupServiceImpl implements IGroupService {
 
         if (group.get().getAccess() == 0) {
             for (User i : users) {
-                if (i.getId() == user.get().getId()) {
+                if (i.getIdUser() == user.get().getIdUser()) {
                     return posts;
                 }
             }

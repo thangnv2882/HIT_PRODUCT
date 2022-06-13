@@ -2,6 +2,7 @@ package com.example.strawberry;
 
 import com.corundumstudio.socketio.SocketIOServer;
 import com.example.strawberry.adapter.web.v1.socket.io.SocketApplication;
+import com.google.common.base.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -27,6 +28,6 @@ public class StrawberryApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        SocketApplication.startAplication();
+//        SocketApplication.startAplication();
     }
 }

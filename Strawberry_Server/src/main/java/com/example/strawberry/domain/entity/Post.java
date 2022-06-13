@@ -25,6 +25,11 @@ import java.util.Set;
 @Table(name = "posts")
 public class Post extends AbstractAuditingEntity {
 
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idPost;
+
     //    @NotBlank
     @Nationalized
     @Length(max = 10000)
@@ -37,11 +42,9 @@ public class Post extends AbstractAuditingEntity {
 //    @NotBlank
     private int access;
 
-    private Long likes = 0L;
-    private Long dislikes = 0L;
-
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "post")

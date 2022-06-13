@@ -22,6 +22,11 @@ import java.util.Set;
 @Table(name = "comments")
 public class Comment extends AbstractAuditingEntity {
 
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idComment;
+
 //    @NotBlank(message = "Khong duoc de trong")
 //    @Nationalized
 //    @Length(max = 20000)

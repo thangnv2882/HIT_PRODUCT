@@ -6,10 +6,10 @@ import com.example.strawberry.domain.entity.Post;
 import com.example.strawberry.domain.entity.Reaction;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
 import java.util.Set;
 
 public interface IReactionService {
     Reaction setReactionForPost(ReactionDTO reactionDTO);
-    Long getCountReactionOfPost(Long idPost);
-    Long getCountReactionTypeOfPost(Long idPost, ReactionType reactionType);
+    Map<String, Long> getCountReactionOfPost(Long idPost);
 }

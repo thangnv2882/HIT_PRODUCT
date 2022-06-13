@@ -23,6 +23,7 @@ public class UrlConstant {
         public static final String DATA_USER_FRIENDS_REQUEST = PRE_FIX + "/{id}/friend-requests";
         public static final String DATA_IMAGES_OF_USER = PRE_FIX + "/{id}/images";
         public static final String DATA_VIDEOS_OF_USER = PRE_FIX + "/{id}/videos";
+
     }
 
     public static class Post {
@@ -89,8 +90,7 @@ public class UrlConstant {
         private static final String PRE_FIX = "/reactions";
         public static final String DATA_REACTION = PRE_FIX;
         public static final String DATA_REACTION_SET_REACTION = PRE_FIX + "/set-reaction";
-        public static final String DATA_REACTION_GET_ALL = PRE_FIX + "/{idPost}/get-count";
-        public static final String DATA_REACTION_GET_ONE = PRE_FIX + "/{idPost}/{reactionType}/get-count";
+        public static final String DATA_REACTION_GET_COUNT = PRE_FIX + "/{idPost}/get-count";
 
     }
 

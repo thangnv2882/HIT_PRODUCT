@@ -1,5 +1,5 @@
 package com.example.strawberry.adapter.web.base;
 
 public enum ReactionType {
-    LIKE, DISLIKE
+    LIKE, LOVE, CARE, HAHA, WOW, SAD, ANGRY
 }

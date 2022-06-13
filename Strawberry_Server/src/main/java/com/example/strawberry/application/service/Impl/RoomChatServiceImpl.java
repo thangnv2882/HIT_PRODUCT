@@ -51,7 +51,7 @@ public class RoomChatServiceImpl implements IRoomChatService {
         Optional<RoomChat> roomChat = roomChatRepository.findById(idRoomChat);
         checkRoomChatExists(roomChat);
         Set<User> users = roomChat.get().getUsers();
-        if(users.stream().findFirst().get().getId() != idUserBoss) {
+        if(users.stream().findFirst().get().getIdUser() != idUserBoss) {
             throw new ExceptionAll("Can't delete chat room because you're not the manager");
         }
         roomChatRepository.delete(roomChat.get());

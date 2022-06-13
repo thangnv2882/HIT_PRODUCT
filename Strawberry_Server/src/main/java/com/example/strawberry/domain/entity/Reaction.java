@@ -22,7 +22,7 @@ public class Reaction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idReaction;
 
     private ReactionType reactionType;
 

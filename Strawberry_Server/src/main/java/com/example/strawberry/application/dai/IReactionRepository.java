@@ -13,12 +13,13 @@ import java.util.Optional;
 @Repository
 public interface IReactionRepository extends JpaRepository<Reaction, Long> {
 
-    @Query("select r from Reaction r where r.post.id = ?1 and r.user.id = ?2")
-    Reaction findByPostIdAndUserId(Long idPost, Long idUser);
+    @Query("select r from Reaction r where r.post.idPost = ?1 and r.user.idUser = ?2")
+    Reaction findByPostIdPostAndUserIdUser(Long idPost, Long idUser);
 
-    @Query("select count(r) from Reaction r where r.post.id = ?1")
-    Long countByPostId(Long idPost);
+    @Query("select count(r) from Reaction r where r.post.idPost = ?1")
+    Long countByPostIdPost(Long idPost);
 
-    Long countByPostIdAndAndReactionType(Long idPost, ReactionType reactionType);
+    @Query("select count(r) from Reaction r where r.post.idPost = ?1 and r.reactionType = ?2")
+    Long countByPostIdPostAndAndReactionType(Long idPost, ReactionType reactionType);
 
 }

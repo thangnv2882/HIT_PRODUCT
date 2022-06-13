@@ -131,13 +131,22 @@ public class UserController {
     @GetMapping(UrlConstant.User.DATA_IMAGES_OF_USER)
     public ResponseEntity<?> getAllImage(
             @PathVariable("id") Long id) {
-        return VsResponseUtil.ok(userService.getAllImage(id));
+        return VsResponseUtil.ok(userService.getAllImageByIdUser(id));
     }
 
     @ApiOperation(value = "Xem tất cả video của user")
     @GetMapping(UrlConstant.User.DATA_VIDEOS_OF_USER)
     public ResponseEntity<?> getAllVideo(
             @PathVariable("id") Long id) {
-        return VsResponseUtil.ok(userService.getAllVideo(id));
+        return VsResponseUtil.ok(userService.getAllVideoByIdUser(id));
     }
+
+
+    // More
+    @ApiOperation(value = "Xem danh sách tất cả tài khoản đã đăng ký.")
+    @GetMapping("users/register")
+    public ResponseEntity<?> getAllUserRegister() {
+        return VsResponseUtil.ok(userService.findAllUserRegister());
+    }
+
 }

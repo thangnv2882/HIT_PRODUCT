@@ -7,4 +7,6 @@ public class EmailConstant {
     public static String SUBJECT_ACTIVE = "STRAWBERRY ACTIVATION";
     public static String SUBJECT_RESET = "RESET YOUR PASSWORD";
     public static String CONTENT = "\nYou have successfully created an account on Strawberry.";
+    public static String SENT_SUCCESSFULLY = "SENT SUCCESSFULLY.";
+
 }

@@ -2,6 +2,7 @@ package com.example.strawberry.adapter.web.v1.controller;
 
 import com.example.strawberry.adapter.web.base.RestApiV1;
 import com.example.strawberry.adapter.web.base.VsResponseUtil;
+import com.example.strawberry.adapter.web.v1.transfer.parameter.auth.AuthenticationRequest;
 import com.example.strawberry.application.constants.UrlConstant;
 import com.example.strawberry.application.service.IUserService;
 import com.example.strawberry.domain.dto.UserDTO;
@@ -22,7 +23,7 @@ public class AuthController {
     }
 
     @PostMapping(UrlConstant.Auth.LOGIN)
-    public ResponseEntity<?> login(@RequestBody UserDTO userDTO) {
-        return VsResponseUtil.ok(userService.login(userDTO));
+    public ResponseEntity<?> login(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+        return VsResponseUtil.ok(userService.login(authenticationRequest));
     }
 }
