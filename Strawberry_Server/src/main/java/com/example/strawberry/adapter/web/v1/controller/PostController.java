@@ -4,11 +4,15 @@ import com.example.strawberry.adapter.web.base.RestApiV1;
 import com.example.strawberry.adapter.web.base.VsResponseUtil;
 import com.example.strawberry.application.constants.UrlConstant;
 import com.example.strawberry.application.service.IPostService;
+import com.example.strawberry.application.service.Impl.PostServiceImpl;
+import com.example.strawberry.application.service.Impl.UserServiceImpl;
 import com.example.strawberry.domain.dto.PostDTO;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import static com.example.strawberry.application.service.Impl.PostServiceImpl.getAllVideoByIdPost;
 
 
 @RestApiV1
@@ -69,14 +73,14 @@ public class PostController {
     @ApiOperation(value = "Lấy ra tất cả ảnh của post theo id.")
     @GetMapping(UrlConstant.Post.DATA_POST_GET_IMAGES)
     public ResponseEntity<?> getAllImageById(@PathVariable("idPost") Long idPost) {
-        return VsResponseUtil.ok(postService.getAllImageById(idPost));
+        return VsResponseUtil.ok(PostServiceImpl.getAllImageByIdPost(idPost));
     }
 
     @ApiOperation(value = "Lấy ra tất cả video của post theo id.")
     @GetMapping(UrlConstant.Post.DATA_POST_GET_VIDEOS)
     public ResponseEntity<?> getAllVideoById(
             @PathVariable("idPost") Long idPost) {
-        return VsResponseUtil.ok(postService.getAllVideoById(idPost));
+        return VsResponseUtil.ok(PostServiceImpl.getAllVideoByIdPost(idPost));
     }
 
     @ApiOperation(value = "Lấy ra tất cả bình luận của bài post.")
@@ -84,6 +88,6 @@ public class PostController {
     public ResponseEntity<?> getAllCommentByIdPost(
             @PathVariable("idPost") Long idPost
     ) {
-        return VsResponseUtil.ok(postService.getAllCommentByIdPost(idPost));
+        return VsResponseUtil.ok(PostServiceImpl.getAllCommentByIdPost(idPost));
     }
 }

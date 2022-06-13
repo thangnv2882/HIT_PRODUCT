@@ -33,12 +33,12 @@ public class FriendShipImpl implements IFriendShipService {
 
         Set<User> listUser = new HashSet<>();
 
-        Set<FriendShip> friendShip1 = friendShipRepository.findAllByUserSenderIdAndIsAccept(id, Boolean.TRUE);
+        Set<FriendShip> friendShip1 = friendShipRepository.findAllByUserSenderIdUserAndIsAccept(id, Boolean.TRUE);
         friendShip1.forEach(i -> {
             listUser.add(i.getUserReceiver());
         });
 
-        Set<FriendShip> friendShip2 = friendShipRepository.findAllByUserReceiverIdAndIsAccept(id, Boolean.TRUE);
+        Set<FriendShip> friendShip2 = friendShipRepository.findAllByUserReceiverIdUserAndIsAccept(id, Boolean.TRUE);
         friendShip2.forEach(i -> {
             listUser.add(i.getUserSender());
         });
@@ -50,7 +50,7 @@ public class FriendShipImpl implements IFriendShipService {
         Optional<User> user = userRepository.findById(idUserReceiver);
         userService.checkUserExists(user);
 
-        Set<FriendShip> friendShip = friendShipRepository.findAllByUserReceiverIdAndIsAccept(idUserReceiver, Boolean.FALSE);
+        Set<FriendShip> friendShip = friendShipRepository.findAllByUserReceiverIdUserAndIsAccept(idUserReceiver, Boolean.FALSE);
         Set<User> users = new HashSet<>();
         friendShip.forEach(i -> {
             users.add(i.getUserSender());
@@ -60,7 +60,7 @@ public class FriendShipImpl implements IFriendShipService {
 
     @Override
     public String addFriend(Long idUserSender, Long idUserReceiver) {
-        FriendShip friendShip = friendShipRepository.findFriendShipByUserSenderIdAndUserReceiverId(idUserSender, idUserReceiver);
+        FriendShip friendShip = friendShipRepository.findFriendShipByUserSenderIdUserAndUserReceiverIdUser(idUserSender, idUserReceiver);
 
         if (friendShip != null) {
             if (friendShip.getIsAccept() == Boolean.FALSE) {
@@ -87,7 +87,7 @@ public class FriendShipImpl implements IFriendShipService {
 
     @Override
     public String cancelAddFriend(Long idUserSender, Long idUserReceiver) {
-        FriendShip friendShip = friendShipRepository.findFriendShipByUserSenderIdAndUserReceiverId(idUserSender, idUserReceiver);
+        FriendShip friendShip = friendShipRepository.findFriendShipByUserSenderIdUserAndUserReceiverIdUser(idUserSender, idUserReceiver);
         if (friendShip != null) {
             friendShipRepository.delete(friendShip);
             return "Canceled friend request.";
@@ -97,7 +97,7 @@ public class FriendShipImpl implements IFriendShipService {
 
     @Override
     public String acceptFriend(Long idUserSender, Long idUserReceiver) {
-        FriendShip friendShip = friendShipRepository.findFriendShipByUserSenderIdAndUserReceiverId(idUserSender, idUserReceiver);
+        FriendShip friendShip = friendShipRepository.findFriendShipByUserSenderIdUserAndUserReceiverIdUser(idUserSender, idUserReceiver);
         if (friendShip != null) {
             if (friendShip.getIsAccept() == Boolean.FALSE) {
                 friendShip.setIsAccept(Boolean.TRUE);
@@ -112,12 +112,12 @@ public class FriendShipImpl implements IFriendShipService {
     @Override
     public String unFriend(Long idUserSender, Long idUserReceiver) {
         FriendShip friendShip = friendShipRepository
-                .findFriendShipByUserSenderIdAndUserReceiverIdAndIsAccept(idUserSender, idUserReceiver, Boolean.TRUE);
+                .findFriendShipByUserSenderIdUserAndUserReceiverIdUserAndIsAccept(idUserSender, idUserReceiver, Boolean.TRUE);
         if (friendShip != null) {
             friendShipRepository.delete(friendShip);
             return "Unfriended successfully.";
         }
-        friendShip = friendShipRepository.findFriendShipByUserSenderIdAndUserReceiverIdAndIsAccept(idUserReceiver, idUserSender, Boolean.TRUE);
+        friendShip = friendShipRepository.findFriendShipByUserSenderIdUserAndUserReceiverIdUserAndIsAccept(idUserReceiver, idUserSender, Boolean.TRUE);
         if (friendShip != null) {
             friendShipRepository.delete(friendShip);
             return "Unfriended successfully.";

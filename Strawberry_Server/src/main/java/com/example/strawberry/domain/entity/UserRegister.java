@@ -8,6 +8,9 @@ import lombok.Setter;
 import org.hibernate.annotations.Nationalized;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
 
 @Getter
@@ -16,6 +19,11 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 @Entity
 public class UserRegister extends AbstractAuditingEntity {
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idUserRegister;
 
     @NotBlank
     private String firstName;
@@ -33,5 +41,7 @@ public class UserRegister extends AbstractAuditingEntity {
     private String phoneNumber;
 
     private String code;
+
+    private String linkAvt;
 
 }

@@ -20,7 +20,7 @@ public class FriendShip {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long idFriendShip;
 
     private Boolean isAccept;
 

@@ -20,6 +20,6 @@ public interface IPostRepository extends JpaRepository<Post, Long> {
     @Query("select p from Post p where p.user = ?1 and p.group = ?2 and p.access = ?3")
     Set<Post> findPostByUserAndGroupAndAccess(User user, Group group, int access);
 
-    @Query("select p from Post p where p.user.id = ?1 and p.access = ?2 and p.group = ?3")
-    Set<Post> findPostByUserIdAndAccessAndGroup(Long idUser, int access, Group group);
+    @Query("select p from Post p where p.user.idUser = ?1 and p.access = ?2 and p.group = ?3")
+    Set<Post> findPostByUserIdUserAndAccessAndGroup(Long idUser, int access, Group group);
 }

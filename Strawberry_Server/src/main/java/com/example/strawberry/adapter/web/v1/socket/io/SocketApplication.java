@@ -19,14 +19,15 @@ public class SocketApplication {
 
         final SocketIOServer socketIOServer= new SocketIOServer(configuration);
 
-        socketIOServer.addEventListener("client-send-room", String.class, (client, data, ackRequest)->{
+        socketIOServer.addEventListener("client-send-room", JSONObject.class, (client, data, ackRequest)->{
             System.out.println(data);
+            client.sendEvent("reply-client", "lại nè");
 //            client.joinRoom(data);
 //            ROOM = data.toString();
         });
 
-        socketIOServer.addEventListener("client-leave-room", String.class, (client, data, ackRequest)->{
-            client.leaveRoom(data);
+        socketIOServer.addEventListener("client-leave-room", JSONObject.class, (client, data, ackRequest)->{
+//            client.leaveRoom(data);
         });
 
         socketIOServer.addEventListener("client-send-message", JSONObject.class, (client, data, ackRequest)->{

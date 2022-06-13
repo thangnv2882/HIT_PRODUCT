@@ -21,6 +21,11 @@ import java.util.Set;
 @Table(name = "tbgroups")
 public class Group extends AbstractAuditingEntity{
 
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idGroup;
+
     private String name;
     private int access;
 

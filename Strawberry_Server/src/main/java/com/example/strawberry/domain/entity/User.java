@@ -12,9 +12,7 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -23,6 +21,11 @@ import java.util.Set;
 @AllArgsConstructor
 @Table(name = "users")
 public class User extends AbstractAuditingEntity {
+
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long idUser;
 
     @Nationalized
     @NotBlank
@@ -63,7 +66,7 @@ public class User extends AbstractAuditingEntity {
 
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
-    @JsonIgnore
+//    @JsonIgnore
     private Set<Post> posts = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")

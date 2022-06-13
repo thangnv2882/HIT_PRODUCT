@@ -10,7 +10,11 @@ import java.util.List;
 
 @Repository
 public interface IUserRegisterRepository extends JpaRepository<UserRegister, Long> {
-    List<UserRegister> findAllByStatusIs(Boolean status);
+
+    List<UserRegister> findAllByStatus(Boolean status);
+
+    @Query("select u from UserRegister u where u.email = ?1")
+    UserRegister findByEmail(String Email);
 
     @Query("select u from UserRegister u where u.email = ?1 or u.phoneNumber = ?2")
     UserRegister findByEmailOrPhoneNumber(String email, String phoneNumber);
