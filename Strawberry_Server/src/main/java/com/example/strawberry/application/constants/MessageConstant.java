@@ -9,8 +9,11 @@ public class MessageConstant {
     public static String COMMENT_NOT_EXISTS = "Comment not exists.";
     public static String ROOMCHAT_NOT_EXISTS = "Room chat not exists.";
     public static String MESSAGE_NOT_EXISTS = "Message not exists.";
+    public static String USER_NOT_IN_GROUP = "User not in group.";
+    public static String USER_NOT_IS_ADMIN_GROUP = "You are not the admin of the group";
+    public static String USER_IS_MEMBER_GROUP = "This user is an member of group";
+    public static String NOT_FOUND = "Not found";
 
-
-    public static String USER_NOT_IN_GROUP = "User not in group";
+    public static String DELETE_GROUP_SUSCESS = "Deleted group.";
 
 }

@@ -65,6 +65,7 @@ public class UrlConstant {
         public static final String DATA_GROUP_BY_ACCESS = PRE_FIX + "/get-by-access";
         public static final String DATA_GROUP_ALL_USER = PRE_FIX + "/{idGroup}/users";
         public static final String DATA_GROUP_CREATE_GROUP = PRE_FIX + "/{idUser}/create-group";
+        public static final String DATA_GROUP_DELETE_GROUP = PRE_FIX + "/{idGroup}/{idUser}/delete-group";
         public static final String DATA_GROUP_ADD_MEMBER = PRE_FIX + "/{idGroup}/{idUser}/add-user-to-group";
         public static final String DATA_GROUP_GET_POSTS = PRE_FIX + "/{idGroup}/{idUser}/get-post";
 

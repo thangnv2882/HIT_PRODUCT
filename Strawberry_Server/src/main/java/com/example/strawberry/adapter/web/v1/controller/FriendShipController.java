@@ -26,7 +26,7 @@ public class FriendShipController {
     }
 
     @ApiOperation(value = "Huỷ gửi lời mời kết bạn")
-    @PostMapping(UrlConstant.FriendShip.DATA_FRIEND_CANCEL_ADD_FRIEND)
+    @DeleteMapping(UrlConstant.FriendShip.DATA_FRIEND_CANCEL_ADD_FRIEND)
     public ResponseEntity<?> cancelAddFriend(
             @PathVariable("idUserSender") Long idUserSender,
             @PathVariable("idUserReceiver") Long idUserReceiver) {
@@ -42,7 +42,7 @@ public class FriendShipController {
     }
 
     @ApiOperation(value = "Huỷ kết bạn")
-    @PostMapping(UrlConstant.FriendShip.DATA_FRIEND_UN_FRIEND)
+    @DeleteMapping(UrlConstant.FriendShip.DATA_FRIEND_UN_FRIEND)
     public ResponseEntity<?> unFriend(
             @PathVariable("idUserSender") Long idUserSender,
             @PathVariable("idUserReceiver") Long idUserReceiver) {
