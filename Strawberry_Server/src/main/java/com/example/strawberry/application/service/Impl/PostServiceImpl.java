@@ -31,9 +31,10 @@ public class PostServiceImpl implements IPostService {
     private final GroupServiceImpl groupService;
     private final ModelMapper modelMapper;
     private final UploadFile uploadFile;
+    private final IUserGroupRepository userGroupRepository;
     private Slugify slg = new Slugify();
 
-    public PostServiceImpl(IPostRepository postRepository, IUserRepository userRepository, IGroupRepository groupRepository, IImageRepository imageRepository, IVideoRepository videoRepository, IReactionRepository reactionRepository, UserServiceImpl userService, GroupServiceImpl groupService, ModelMapper modelMapper, UploadFile uploadFile) {
+    public PostServiceImpl(IPostRepository postRepository, IUserRepository userRepository, IGroupRepository groupRepository, IImageRepository imageRepository, IVideoRepository videoRepository, IReactionRepository reactionRepository, UserServiceImpl userService, GroupServiceImpl groupService, ModelMapper modelMapper, UploadFile uploadFile, IUserGroupRepository userGroupRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.groupRepository = groupRepository;
@@ -44,6 +45,7 @@ public class PostServiceImpl implements IPostService {
         this.groupService = groupService;
         this.modelMapper = modelMapper;
         this.uploadFile = uploadFile;
+        this.userGroupRepository = userGroupRepository;
     }
 
     @Override
@@ -65,7 +67,7 @@ public class PostServiceImpl implements IPostService {
         Optional<User> userFix = userRepository.findById(idUserFix);
         UserServiceImpl.checkUserExists(userFix);
         User userOwns = post.get().getUser();
-        if(userOwns.getIdUser() != userFix.get().getIdUser()) {
+        if (userOwns.getIdUser() != userFix.get().getIdUser()) {
             throw new ExceptionAll("This post is not yours.");
         }
 
@@ -82,7 +84,7 @@ public class PostServiceImpl implements IPostService {
         Optional<User> userFix = userRepository.findById(idUserFix);
         UserServiceImpl.checkUserExists(userFix);
         User userOwns = post.get().getUser();
-        if(userOwns.getIdUser() != userFix.get().getIdUser()) {
+        if (userOwns.getIdUser() != userFix.get().getIdUser()) {
             throw new ExceptionAll("This post is not yours.");
         }
         postRepository.delete(post.get());
@@ -124,7 +126,7 @@ public class PostServiceImpl implements IPostService {
         return list;
     }
 
-//    Hiện thị các lượt bày tỏ cảm xúc của bài post này
+    //    Hiện thị các lượt bày tỏ cảm xúc của bài post này
     public static Map<String, Long> getCountReactionOfPost(Long idPost) {
         Map<String, Long> countReaction = new HashMap<>();
         countReaction.put("LIKE", reactionRepository.countByPostIdPostAndAndReactionType(idPost, LIKE));
@@ -139,7 +141,7 @@ public class PostServiceImpl implements IPostService {
     }
 
 
-//    Lấy ra thông tin cơ bản của Video trong Post (idImage, linkImage)
+    //    Lấy ra thông tin cơ bản của Video trong Post (idImage, linkImage)
     public static List<Map<String, Object>> getAllImageByIdPostSimple(Long idPost) {
         Optional<Post> post = postRepository.findById(idPost);
         checkPostExists(post);
@@ -158,7 +160,7 @@ public class PostServiceImpl implements IPostService {
         return list;
     }
 
-//    Lấy ra thông tin cơ bản của Video trong Post (idVideo, linkVideo)
+    //    Lấy ra thông tin cơ bản của Video trong Post (idVideo, linkVideo)
     public static List<Map<String, Object>> getAllVideoByIdPostSimple(Long idPost) {
         Optional<Post> post = postRepository.findById(idPost);
         checkPostExists(post);
@@ -176,7 +178,7 @@ public class PostServiceImpl implements IPostService {
         return list;
     }
 
-//    Lấy ra thông tin chi tiết của tất cả ảnh trong 1 bài viết
+    //    Lấy ra thông tin chi tiết của tất cả ảnh trong 1 bài viết
     public static Set<Image> getAllImageByIdPost(Long idPost) {
         Optional<Post> post = postRepository.findById(idPost);
         checkPostExists(post);
@@ -185,7 +187,7 @@ public class PostServiceImpl implements IPostService {
     }
 
 
-//    Lấy ra thông tin chi tiết của tất cả video trong 1 bài viết
+    //    Lấy ra thông tin chi tiết của tất cả video trong 1 bài viết
     public static Set<Video> getAllVideoByIdPost(Long idPost) {
         Optional<Post> post = postRepository.findById(idPost);
         checkPostExists(post);
@@ -199,14 +201,14 @@ public class PostServiceImpl implements IPostService {
         Set<Comment> comments = post.get().getComments();
         Long countComment = Long.valueOf(comments.size());
 
-        for(Comment comment : comments) {
+        for (Comment comment : comments) {
             countComment += comment.getCommentChilds().size();
         }
 
         return countComment;
     }
 
-//    Lấy ra thông tin chi tiết của tất cả bình luận trong 1 bài viết
+    //    Lấy ra thông tin chi tiết của tất cả bình luận trong 1 bài viết
     public static Set<Comment> getAllCommentByIdPost(Long idPost) {
         Optional<Post> post = postRepository.findById(idPost);
         checkPostExists(post);
@@ -221,19 +223,21 @@ public class PostServiceImpl implements IPostService {
         Optional<User> user = userRepository.findById(idUser);
         UserServiceImpl.checkUserExists(user);
 
-        Set<User> users = group.get().getUsers();
-        for (User i : users) {
-            if(i.getIdUser() == user.get().getIdUser()) {
-                Post post = modelMapper.map(postDTO, Post.class);
-                post.setUser(user.get());
-                post.setGroup(group.get());
+        UserGroup userGroup = userGroupRepository.findByUserIdUserAndGroupIdGroup(idUser, idGroup);
 
-                setMediaToPost(post, fileImages, fileVideos);
-                postRepository.save(post);
-                return post;
-            }
+        // Nếu nhóm riêng tư thì chỉ thành viên có thể đăng bài trong nhóm
+        if (group.get().getAccess() == 0 && userGroup == null) {
+            throw new ExceptionAll(MessageConstant.USER_NOT_IN_GROUP);
         }
-        throw new NotFoundException(MessageConstant.USER_NOT_IN_GROUP);
+
+        // Nếu nhóm công khai thì tất cả mọi người có thể điều có thể đăng bài trong nhóm
+        Post post = modelMapper.map(postDTO, Post.class);
+        post.setUser(user.get());
+        post.setGroup(group.get());
+
+        setMediaToPost(post, fileImages, fileVideos);
+        postRepository.save(post);
+        return post;
     }
 
 

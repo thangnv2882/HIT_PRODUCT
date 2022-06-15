@@ -2,7 +2,6 @@ package com.example.strawberry.domain.entity;
 
 import com.example.strawberry.domain.entity.base.AbstractAuditingEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -65,42 +64,33 @@ public class User extends AbstractAuditingEntity {
     private String code;
 
 
+//    link to post
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
 //    @JsonIgnore
     private Set<Post> posts = new HashSet<>();
 
+//    link to comment
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     @JsonIgnore
     private Set<Comment> comments = new HashSet<>();
 
+//    link to reaction
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     @JsonIgnore
     private Set<Reaction> reactions = new HashSet<>();
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinTable(name = "user_group",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "group_id"))
+//    link to user_group_detail
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     @JsonIgnore
-    private Set<Group> groups = new HashSet<>();
+    private Set<UserGroup> userGroups = new HashSet<>();
 
+    /*
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "user_room",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "room_id"))
     @JsonIgnore
     private Set<RoomChat> roomChats = new HashSet<>();
+     */
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(fullName, user.fullName) && Objects.equals(email, user.email) && Objects.equals(phoneNumber, user.phoneNumber) && Objects.equals(password, user.password) && Objects.equals(gender, user.gender) && Objects.equals(address, user.address) && Objects.equals(birthday, user.birthday) && Objects.equals(biography, user.biography) && Objects.equals(linkAvt, user.linkAvt) && Objects.equals(code, user.code) && Objects.equals(posts, user.posts) && Objects.equals(groups, user.groups);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(firstName, lastName, fullName, email, phoneNumber, password, gender, address, birthday, biography, linkAvt, code, posts, groups);
-    }
 }

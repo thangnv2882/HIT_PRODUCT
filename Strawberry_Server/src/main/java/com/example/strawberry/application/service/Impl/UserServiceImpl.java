@@ -5,10 +5,7 @@ import com.example.strawberry.adapter.web.v1.transfer.response.AuthenticationRes
 import com.example.strawberry.application.constants.CommonConstant;
 import com.example.strawberry.application.constants.EmailConstant;
 import com.example.strawberry.application.constants.MessageConstant;
-import com.example.strawberry.application.dai.IPostRepository;
-import com.example.strawberry.application.dai.IReactionRepository;
-import com.example.strawberry.application.dai.IUserRegisterRepository;
-import com.example.strawberry.application.dai.IUserRepository;
+import com.example.strawberry.application.dai.*;
 import com.example.strawberry.application.service.ISendMailService;
 import com.example.strawberry.application.service.IUserService;
 import com.example.strawberry.application.utils.JwtTokenUtil;
@@ -32,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.*;
 
-import static com.example.strawberry.adapter.web.base.ReactionType.*;
 
 
 @Service
@@ -96,15 +92,6 @@ public class UserServiceImpl implements IUserService {
         return new AuthenticationResponse(user.getIdUser(), authenticationRequest.getEmail(), authenticationRequest.getPhoneNumber(), jwt);
     }
 
-//    @Override
-//    public User login(UserDTO userDTO) {
-//        User user = userRepository.findByEmailOrPhoneNumber(userDTO.getEmail(), userDTO.getPhoneNumber());
-//        if (user.getPassword().compareTo(userDTO.getPassword()) == 0) {
-//            return user;
-//        }
-//        throw new NotFoundException(MessageConstant.ACCOUNT_NOT_EXISTS);
-//    }
-
     @Override
     public UserRegister registerUser(UserDTO userDTO) {
         UserRegister userRegister = modelMapper.map(userDTO, UserRegister.class);
@@ -120,19 +107,19 @@ public class UserServiceImpl implements IUserService {
                 + ".\n\nYOUR ACTIVATION CODE: " + code
                 + ".\nThank you for using our service.";
         if (!isEmailOrPhoneNumberExists(userRegister)) {
-            sendMailService.sendMailWithText(EmailConstant.SUBJECT_ACTIVE, content, userDTO.getEmail());
             userRegister.setCode(code);
             userRegister.setFullName(userDTO.getFirstName() + " " + userDTO.getLastName());
             userRegister.setLinkAvt(CommonConstant.AVATAR_DEFAULT);
             userRegisterRepository.save(userRegister);
+            sendMailService.sendMailWithText(EmailConstant.SUBJECT_ACTIVE, content, userDTO.getEmail());
             return userRegister;
         }
         UserRegister userRegister1 = userRegisterRepository.findByEmailOrPhoneNumber(userDTO.getEmail(), userDTO.getPhoneNumber());
-        sendMailService.sendMailWithText(EmailConstant.SUBJECT_ACTIVE, content, userDTO.getEmail());
         userRegister1.setCode(code);
         userRegister1.setFullName(userDTO.getFirstName() + " " + userDTO.getLastName());
         userRegister1.setLinkAvt(CommonConstant.AVATAR_DEFAULT);
         userRegisterRepository.save(userRegister1);
+        sendMailService.sendMailWithText(EmailConstant.SUBJECT_ACTIVE, content, userDTO.getEmail());
         return userRegister1;
     }
 
@@ -261,75 +248,17 @@ public class UserServiceImpl implements IUserService {
         });
         return PostServiceImpl.getAllPostNotInGroup(postsEnd);
     }
-//
-//    public List<?> getAllPostNotInGroup(Set<Post> posts) {
-//        Set<Post> postEnd = new HashSet<>();
-//        posts.forEach(i -> {
-//            if (i.getGroup() == null) {
-//                postEnd.add(i);
-//            }
-//        });
-//        List<Map<String, Object>> list = new ArrayList<>();
-//        for (Post post : postEnd) {
-//            Map<String, Object> map = new HashMap<>();
-//            map.put("id", post.getIdPost());
-//            map.put("createdAt", post.getCreatedAt());
-//            map.put("updatedAt", post.getUpdatedAt());
-//            map.put("contentPost", post.getContentPost());
-//            map.put("access", post.getAccess());
-//            map.put("user", post.getUser());
-//            map.put("reactions", getCountReactionOfPost(post.getIdPost()));
-//            map.put("images", getAllImageByIdPost(post.getIdPost()));
-//            map.put("videos", getAllVideoByIdPost(post.getIdPost()));
-//            map.put("comments", getAllCommentByIdPost(post.getIdPost()));
-//            list.add(map);
-//        }
-//        return list;
-//    }
-//
-//    @Override
-//    public Map<String, Long> getCountReactionOfPost(Long idPost) {
-//        Map<String, Long> countReaction = new HashMap<>();
-//        countReaction.put("LIKE", reactionRepository.countByPostIdPostAndAndReactionType(idPost, LIKE));
-//        countReaction.put("LOVE", reactionRepository.countByPostIdPostAndAndReactionType(idPost, LOVE));
-//        countReaction.put("CARE", reactionRepository.countByPostIdPostAndAndReactionType(idPost, CARE));
-//        countReaction.put("HAHA", reactionRepository.countByPostIdPostAndAndReactionType(idPost, HAHA));
-//        countReaction.put("WOW", reactionRepository.countByPostIdPostAndAndReactionType(idPost, WOW));
-//        countReaction.put("SAD", reactionRepository.countByPostIdPostAndAndReactionType(idPost, SAD));
-//        countReaction.put("ANGRY", reactionRepository.countByPostIdPostAndAndReactionType(idPost, ANGRY));
-//        countReaction.put("ALL", reactionRepository.countByPostIdPost(idPost));
-//        return countReaction;
-//    }
-//
-//    @Override
-//    public Set<Image> getAllImageByIdPost(Long idPost) {
-//        Optional<Post> post = postRepository.findById(idPost);
-//        PostServiceImpl.checkPostExists(post);
-//        Set<Image> images = postRepository.findById(idPost).get().getImages();
-//        return images;
-//    }
-//
-//    @Override
-//    public Set<Video> getAllVideoByIdPost(Long idPost) {
-//        Optional<Post> post = postRepository.findById(idPost);
-//        PostServiceImpl.checkPostExists(post);
-//        Set<Video> videos = postRepository.findById(idPost).get().getVideos();
-//        return videos;
-//    }
-//
-//    @Override
-//    public Set<Comment> getAllCommentByIdPost(Long idPost) {
-//        Optional<Post> post = postRepository.findById(idPost);
-//        PostServiceImpl.checkPostExists(post);
-//        Set<Comment> comments = post.get().getComments();
-//        return comments;
-//    }
 
     @Override
     public Set<Group> getAllGroupByIdUser(Long idUser) {
         Optional<User> user = userRepository.findById(idUser);
         checkUserExists(user);
-        Set<Group> groups = user.get().getGroups();
+
+        Set<UserGroup> userGroups = user.get().getUserGroups();
+        Set<Group> groups = new HashSet<>();
+        userGroups.forEach(i -> {
+            groups.add(i.getGroup());
+        });
         return groups;
     }
 
