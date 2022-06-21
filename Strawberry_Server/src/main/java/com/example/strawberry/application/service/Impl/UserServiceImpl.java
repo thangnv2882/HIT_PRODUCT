@@ -75,6 +75,13 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
+    public User getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email);
+        checkUserExists(Optional.ofNullable(user));
+        return user;
+    }
+
+    @Override
     public AuthenticationResponse login(AuthenticationRequest authenticationRequest) throws Exception {
         try {
             authenticationManager.authenticate(
@@ -89,7 +96,7 @@ public class UserServiceImpl implements IUserService {
         UserDetails userDetails = myUserDetailsService.loadUserByUsername(authenticationRequest.getEmail());
         String jwt = jwtTokenUtil.generateToken(userDetails);
         User user = userRepository.findByEmail(authenticationRequest.getEmail());
-        return new AuthenticationResponse(user.getIdUser(), authenticationRequest.getEmail(), authenticationRequest.getPhoneNumber(), jwt);
+        return new AuthenticationResponse(user, jwt);
     }
 
     @Override

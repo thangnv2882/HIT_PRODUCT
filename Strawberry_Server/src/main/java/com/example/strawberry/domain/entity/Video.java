@@ -22,10 +22,12 @@ public class Video {
 
     private String linkVideo;
 
+//    link to table post
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id")
     private Post post;
 
+//    link to table post
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "comment_id")
     private Comment comment;

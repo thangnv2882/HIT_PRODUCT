@@ -27,10 +27,12 @@ public class Group extends AbstractAuditingEntity{
     private String name;
     private int access;
 
+//    link to table userGroup
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "group")
     @JsonIgnore
     private Set<UserGroup> userGroups = new HashSet<>();
 
+//    link to table post
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "group")
     @JsonIgnore
     private Set<Post> posts = new HashSet<>();
