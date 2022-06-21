@@ -32,6 +32,7 @@ public class UrlConstant {
 
         private static final String PRE_FIX = "/posts";
         public static final String DATA_POST = PRE_FIX;
+        public static final String DATA_POST_GET_POST = PRE_FIX + "/{idpPost}";
         public static final String DATA_POST_CREATE_POST = PRE_FIX + "/{idUser}/create-post";
         public static final String DATA_POST_CREATE_IN_GROUP = PRE_FIX + "/{idUser}/{idGroup}/create-post-in-group";
         public static final String DATA_POST_UPDATE_POST = PRE_FIX + "/{idUserFix}/{idPost}/update-post";
@@ -104,5 +105,19 @@ public class UrlConstant {
 //        public static final String SIGNUP = PRE_FIX + "/signup";
 //        public static final String VALIDATE = PRE_FIX + "/validate";
 //        public static final String LOGOUT = PRE_FIX + "/logout/{id}";
+    }
+
+    public static class Notification {
+        public Notification() {
+        }
+
+        private static final String PRE_FIX = "/notifications";
+        public static final String DATA_NOTIFICATION = PRE_FIX;
+        public static final String DATA_NOTIFICATION_ALL = PRE_FIX + "/{idUser}";
+        public static final String DATA_NOTIFICATION_CREATE = PRE_FIX + "/{idUser}/create-notification";
+        public static final String DATA_NOTIFICATION_MARK_AS_READ = PRE_FIX + "/{idNoti}/mark-as-read";
+        public static final String DATA_NOTIFICATION_MARK_AS_UNREAD = PRE_FIX + "/{idNoti}/mark-as-unread";
+        public static final String DATA_NOTIFICATION_DELETE = PRE_FIX + "/{idNoti}/delete-notification";
+
     }
 }

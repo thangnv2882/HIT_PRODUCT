@@ -28,4 +28,6 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
         return VsResponseUtil.ok(userService.login(authenticationRequest));
     }
+
+
 }

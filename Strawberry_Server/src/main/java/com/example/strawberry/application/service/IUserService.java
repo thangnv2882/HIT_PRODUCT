@@ -14,8 +14,13 @@ import java.util.Set;
 
 public interface IUserService {
     User findUserById(Long id);
-//    User login(UserDTO userDTO);
+    User getUserByEmail(String email);
+
+    //    User login(UserDTO userDTO);
     AuthenticationResponse login(AuthenticationRequest request) throws Exception;
+
+
+
     List<User> findAllUsers();
     UserRegister registerUser(UserDTO userDTO);
     UserRegister resendCode(Long id);

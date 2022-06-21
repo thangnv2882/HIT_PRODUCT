@@ -19,10 +19,12 @@ public class UserGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUserGroup;
 
+//    link to table user
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
+//    link to table group
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "group_id")
     private Group group;

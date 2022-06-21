@@ -26,14 +26,17 @@ public class Reaction {
 
     private ReactionType reactionType;
 
+//    link to table post
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id")
     private Post post;
 
+//    link to table user
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
 
+//    link to table comment
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "comment_id")
     private Comment comment;

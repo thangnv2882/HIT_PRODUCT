@@ -23,11 +23,12 @@ public class FriendShip {
     private Long idFriendShip;
 
     private Boolean isAccept;
-
+//    link to table user
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_sender")
     private User userSender;
 
+//    link to table user
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_receiver")
     private User userReceiver;

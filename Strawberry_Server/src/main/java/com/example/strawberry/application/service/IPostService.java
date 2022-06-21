@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 public interface IPostService {
+    Post getPostById(Long idPost);
     List<?> getAllPostPublic(int i);
     Post createPost(Long idUser, PostDTO postDTO, MultipartFile[] fileImages, MultipartFile[] fileVideos);
     Post updatePost(Long idUserFix, Long idPost, PostDTO postDTO, MultipartFile[] fileImages, MultipartFile[] fileVideos);
@@ -19,7 +20,7 @@ public interface IPostService {
 //    Set<Video> getAllVideoByIdPost(Long id);
 //    Map<String, Long> getCountReactionOfPost(Long idPost);
 
-//    Set<Comment> getAllCommentByIdPost(Long idPost);
+    List<Comment> getAllCommentByIdPost(Long idPost);
 
     Post createPostInGroup(Long idGroup, Long idUser, PostDTO postDTO, MultipartFile[] fileImages, MultipartFile[] fileVideos);
 

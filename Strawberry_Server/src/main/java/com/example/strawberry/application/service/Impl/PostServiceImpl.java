@@ -49,6 +49,13 @@ public class PostServiceImpl implements IPostService {
     }
 
     @Override
+    public Post getPostById(Long idPost) {
+        Optional<Post> post = postRepository.findById(idPost);
+        checkPostExists(post);
+        return post.get();
+    }
+
+    @Override
     public Post createPost(Long idUser, PostDTO postDTO, MultipartFile[] fileImages, MultipartFile[] fileVideos) {
         Optional<User> user = userRepository.findById(idUser);
         UserServiceImpl.checkUserExists(user);
@@ -91,7 +98,6 @@ public class PostServiceImpl implements IPostService {
         return post.get();
     }
 
-
     @Override
     public List<?> getAllPostPublic(int access) {
         Set<Post> posts = postRepository.findAllByAccess(access);
@@ -124,6 +130,18 @@ public class PostServiceImpl implements IPostService {
         list.sort((l1, l2) -> ((Long) l2.get("idPost")).compareTo((Long) l1.get("idPost")));
 
         return list;
+    }
+
+    //    Lấy ra thông tin chi tiết của tất cả bình luận trong 1 bài viết
+    public List<Comment> getAllCommentByIdPost(Long idPost) {
+        Optional<Post> post = postRepository.findById(idPost);
+        checkPostExists(post);
+        Set<Comment> comments = post.get().getComments();
+        List<Comment> commentList = new ArrayList<>(comments);
+
+        commentList.sort((l1, l2) -> (l2.getIdComment()).compareTo(l1.getIdComment()));
+
+        return commentList;
     }
 
     //    Hiện thị các lượt bày tỏ cảm xúc của bài post này
@@ -208,13 +226,7 @@ public class PostServiceImpl implements IPostService {
         return countComment;
     }
 
-    //    Lấy ra thông tin chi tiết của tất cả bình luận trong 1 bài viết
-    public static Set<Comment> getAllCommentByIdPost(Long idPost) {
-        Optional<Post> post = postRepository.findById(idPost);
-        checkPostExists(post);
-        Set<Comment> comments = post.get().getComments();
-        return comments;
-    }
+
 
     @Override
     public Post createPostInGroup(Long idGroup, Long idUser, PostDTO postDTO, MultipartFile[] fileImages, MultipartFile[] fileVideos) {
