@@ -21,7 +21,6 @@ public class AuthGoogleController {
 
   @GetMapping("/save")
   public ResponseEntity<?> save(OAuth2AuthenticationToken token) {
-    System.out.println("luu di");
     return VsResponseUtil.ok(googleService.saveUserWithFirstLogin(token));
   }
 

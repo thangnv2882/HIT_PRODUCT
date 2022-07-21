@@ -21,7 +21,8 @@ public class NotificationController {
 
     @ApiOperation(value = "Xem tất cả thông báo của người dùng.")
     @GetMapping(UrlConstant.Notification.DATA_NOTIFICATION_ALL)
-    public ResponseEntity<?> getAllUsers(@PathVariable("idUser") Long idUser) {
+    public ResponseEntity<?> getAllUsers(
+            @PathVariable("idUser") Long idUser) {
         return VsResponseUtil.ok(notificationService.getAllNotification(idUser));
     }
 

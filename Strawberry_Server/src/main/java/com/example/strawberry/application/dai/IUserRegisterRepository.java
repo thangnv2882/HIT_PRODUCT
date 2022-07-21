@@ -11,6 +11,7 @@ import java.util.List;
 @Repository
 public interface IUserRegisterRepository extends JpaRepository<UserRegister, Long> {
 
+    @Query("select u from UserRegister u where u.status = ?1")
     List<UserRegister> findAllByStatus(Boolean status);
 
     @Query("select u from UserRegister u where u.email = ?1")

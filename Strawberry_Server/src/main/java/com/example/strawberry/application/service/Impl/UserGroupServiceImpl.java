@@ -18,6 +18,8 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import static com.example.strawberry.adapter.web.base.AccessType.*;
+
 @Service
 public class UserGroupServiceImpl implements IUserGroupService {
     private final IUserGroupRepository userGroupRepository;
@@ -58,6 +60,12 @@ public class UserGroupServiceImpl implements IUserGroupService {
         userService.checkUserExists(user);
 
         Group group = modelMapper.map(groupDTO, Group.class);
+        if (PRIVATE.equals(groupDTO.getAccess())) {
+            group.setAccess(PRIVATE);
+        }
+        else {
+            group.setAccess(PUBLIC);
+        }
         groupRepository.save(group);
 
         UserGroup userGroup = new UserGroup();
@@ -88,6 +96,31 @@ public class UserGroupServiceImpl implements IUserGroupService {
         userGroup.setUser(user.get());
         userGroup.setGroup(group.get());
         userGroupRepository.save(userGroup);
+
+        return group.get();
+    }
+
+    @Override
+    public Group deleteUserFromGroup(Long idGroup, Long idUserDelete, Long idUser) {
+        Optional<User> user = userRepository.findById(idUser);
+        userService.checkUserExists(user);
+
+        Optional<Group> group = groupRepository.findById(idGroup);
+        groupService.checkGroupExists(group);
+
+        UserGroup userGroupDelete = userGroupRepository.findByUserIdUserAndGroupIdGroup(idUser, idGroup);
+        UserGroup userGroupAdmin = userGroupRepository.findByUserIdUserAndGroupIdGroup(idUserDelete, idGroup);
+
+//        Quản trị viên có quyền xoá thành viên
+        if(userGroupDelete == null || userGroupAdmin == null) {
+            throw new ExceptionAll(MessageConstant.USER_IS_NOT_MEMBER_GROUP);
+        }
+        else if(userGroupDelete.getIdUserCreated() == null && userGroupAdmin.getIdUserCreated() != null) {
+            userGroupRepository.delete(userGroupDelete);
+        }
+        else {
+            throw new ExceptionAll(MessageConstant.USER_NOT_IS_ADMIN_GROUP);
+        }
 
         return group.get();
     }

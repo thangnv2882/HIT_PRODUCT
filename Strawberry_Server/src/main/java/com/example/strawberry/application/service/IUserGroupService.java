@@ -14,6 +14,8 @@ public interface IUserGroupService {
 
     Group addUserToGroup(Long idGroup, Long idUser);
 
+    Group deleteUserFromGroup(Long idGroup, Long idUserDelete,Long idUser);
+
     String deleteGroup(Long idGroup, Long idUser);
 
 }

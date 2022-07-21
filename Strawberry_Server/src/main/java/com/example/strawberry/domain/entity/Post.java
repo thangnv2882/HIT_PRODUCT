@@ -1,5 +1,6 @@
 package com.example.strawberry.domain.entity;
 
+import com.example.strawberry.adapter.web.base.AccessType;
 import com.example.strawberry.adapter.web.base.ReactionType;
 import com.example.strawberry.domain.entity.base.AbstractAuditingEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -40,7 +41,7 @@ public class Post extends AbstractAuditingEntity {
 //    private String slugPost;
 
 //    @NotBlank
-    private int access;
+    private AccessType access;
 
 //    link to table user
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)

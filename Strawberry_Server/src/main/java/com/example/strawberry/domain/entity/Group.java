@@ -1,5 +1,6 @@
 package com.example.strawberry.domain.entity;
 
+import com.example.strawberry.adapter.web.base.AccessType;
 import com.example.strawberry.domain.entity.base.AbstractAuditingEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -25,7 +26,7 @@ public class Group extends AbstractAuditingEntity{
     private Long idGroup;
 
     private String name;
-    private int access;
+    private AccessType access;
 
 //    link to table userGroup
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "group")
@@ -36,7 +37,6 @@ public class Group extends AbstractAuditingEntity{
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "group")
     @JsonIgnore
     private Set<Post> posts = new HashSet<>();
-
 
 
 }
