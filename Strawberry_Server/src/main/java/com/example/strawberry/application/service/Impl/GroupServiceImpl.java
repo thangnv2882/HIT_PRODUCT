@@ -1,5 +1,6 @@
 package com.example.strawberry.application.service.Impl;
 
+import com.example.strawberry.adapter.web.base.AccessType;
 import com.example.strawberry.application.constants.MessageConstant;
 import com.example.strawberry.application.dai.IGroupRepository;
 import com.example.strawberry.application.dai.IUserGroupRepository;
@@ -24,13 +25,11 @@ public class GroupServiceImpl implements IGroupService {
     private final IGroupRepository groupRepository;
     private final IUserRepository userRepository;
     private final IUserGroupRepository userGroupRepository;
-    private final UserServiceImpl userService;
 
-    public GroupServiceImpl(IGroupRepository groupRepository, IUserRepository userRepository, IUserGroupRepository userGroupRepository, UserServiceImpl userService) {
+    public GroupServiceImpl(IGroupRepository groupRepository, IUserRepository userRepository, IUserGroupRepository userGroupRepository) {
         this.groupRepository = groupRepository;
         this.userRepository = userRepository;
         this.userGroupRepository = userGroupRepository;
-        this.userService = userService;
     }
 
     @Override
@@ -39,15 +38,15 @@ public class GroupServiceImpl implements IGroupService {
     }
 
     @Override
-    public Set<Group> getGroupByAccess(int access) {
-        Set<Group> groups = groupRepository.findGroupByAccessIs(access);
+    public Set<Group> getGroupByAccess(AccessType access) {
+        Set<Group> groups = groupRepository.findByAccess(access);
         return groups;
     }
 
     @Override
     public Set<Post> getAllPostInGroup(Long idGroup, Long idUser) {
         Optional<User> user = userRepository.findById(idUser);
-        userService.checkUserExists(user);
+        UserServiceImpl.checkUserExists(user);
 
         Optional<Group> group = groupRepository.findById(idGroup);
         checkGroupExists(group);
@@ -56,7 +55,7 @@ public class GroupServiceImpl implements IGroupService {
         Set<Post> posts = group.get().getPosts();
 
         // Nếu nhóm riêng tư thì chỉ thành viên có thể xem các bài viết trong nhóm
-        if (group.get().getAccess() == 0) {
+        if (group.get().getAccess().equals(AccessType.PRIVATE)) {
             if (userGroup != null) {
                 return posts;
             }

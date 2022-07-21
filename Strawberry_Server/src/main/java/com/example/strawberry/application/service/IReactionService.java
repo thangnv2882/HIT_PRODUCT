@@ -10,6 +10,6 @@ import java.util.Map;
 import java.util.Set;
 
 public interface IReactionService {
-    Reaction setReactionForPost(ReactionDTO reactionDTO);
+    String setReactionForPost(ReactionDTO reactionDTO);
     Map<String, Long> getCountReactionOfPost(Long idPost);
 }

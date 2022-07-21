@@ -3,6 +3,7 @@ package com.example.strawberry.application.service;
 import com.example.strawberry.domain.dto.CommentDTO;
 import com.example.strawberry.domain.entity.Comment;
 
+import java.util.List;
 import java.util.Set;
 
 public interface ICommentService {
@@ -11,6 +12,8 @@ public interface ICommentService {
     Comment deleteCommentForPost(Long idUser, Long idComment);
 
     Comment createCommentForComment(Long idUser, Long idCommentParent, CommentDTO commentDTO);
+
+//    Set<Comment> getAllCommentByIdPost(Long idPost);
     Set<Comment> getAllCommentChild(Long idCommentParent);
 
 

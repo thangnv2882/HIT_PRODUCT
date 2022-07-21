@@ -35,7 +35,7 @@ public class ReactionServiceImpl implements IReactionService {
     }
 
     @Override
-    public Reaction setReactionForPost(ReactionDTO reactionDTO) {
+    public String setReactionForPost(ReactionDTO reactionDTO) {
         Optional<Post> post = postRepository.findById(reactionDTO.getIdPost());
         postService.checkPostExists(post);
 
@@ -46,7 +46,7 @@ public class ReactionServiceImpl implements IReactionService {
         if (reaction != null) {
             if (reaction.getReactionType().equals(reactionDTO.getReactionType())) {
                 reactionRepository.delete(reaction);
-                return reaction;
+                return "Deleted reaction.";
             }
             SetReaction(reactionDTO, reaction);
         } else {
@@ -55,7 +55,7 @@ public class ReactionServiceImpl implements IReactionService {
             reaction.setUser(userReact.get());
             SetReaction(reactionDTO, reaction);
         }
-        return reaction;
+        return "Created reaction.";
     }
 
     private void SetReaction(ReactionDTO reactionDTO, Reaction reaction) {

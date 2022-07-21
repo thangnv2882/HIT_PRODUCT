@@ -7,10 +7,7 @@ public class RestData<T> {
     public RestStatus status;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String userMessage;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String devMessage;
+    private String message;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
@@ -27,18 +24,12 @@ public class RestData<T> {
         this.status = status;
         this.data = data;
     }
-    public RestData(RestStatus status, String userMessage, T data) {
+    public RestData(RestStatus status, String message, T data) {
         this.status = status;
-        this.userMessage = userMessage;
+        this.message = message;
         this.data = data;
     }
 
-    public RestData(RestStatus status, String userMessage, String devMessage, T data) {
-        this.status = status;
-        this.userMessage = userMessage;
-        this.devMessage = devMessage;
-        this.data = data;
-    }
 
     public RestStatus getStatus() {
         return status;
@@ -48,20 +39,12 @@ public class RestData<T> {
         this.status = status;
     }
 
-    public String getUserMessage() {
-        return userMessage;
+    public String getMessage() {
+        return message;
     }
 
-    public void setUserMessage(String userMessage) {
-        this.userMessage = userMessage;
-    }
-
-    public String getDevMessage() {
-        return devMessage;
-    }
-
-    public void setDevMessage(String devMessage) {
-        this.devMessage = devMessage;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public T getData() {
@@ -72,11 +55,7 @@ public class RestData<T> {
         this.data = data;
     }
 
-    public static RestData<?> error(String userMessage, String devMessage) {
-        return new RestData<>(RestStatus.ERROR, userMessage, devMessage, null);
-    }
-
-    public static RestData<?> error(String userMessage) {
-        return new RestData<>(RestStatus.ERROR, userMessage, null);
+    public static RestData<?> error(String message) {
+        return new RestData<>(RestStatus.ERROR, message, null);
     }
 }

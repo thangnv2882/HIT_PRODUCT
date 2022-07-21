@@ -13,6 +13,7 @@ public class MessageConstant {
     public static String USER_NOT_IN_GROUP = "User not in group.";
     public static String USER_NOT_IS_ADMIN_GROUP = "You are not the admin of the group";
     public static String USER_IS_MEMBER_GROUP = "This user is an member of group";
+    public static String USER_IS_NOT_MEMBER_GROUP = "This user is not an member of group";
     public static String NOT_FOUND = "Not found";
 
     public static String DELETE_GROUP_SUSCESS = "Deleted group.";

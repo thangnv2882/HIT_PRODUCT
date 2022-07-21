@@ -14,6 +14,8 @@ import com.example.strawberry.domain.entity.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -68,7 +70,7 @@ public class CommentServiceImpl implements ICommentService {
         Optional<Comment> comment = commentRepository.findById(idComment);
         checkCommentExists(comment);
 
-        // User là chủ sở hữu comment mới có quyền chỉnh sửa
+//        User là chủ sở hữu comment mới có quyền chỉnh sửa
         Optional<User> userFix = userRepository.findById(idUserFix);
         userService.checkUserExists(userFix);
         User userOwns = comment.get().getUser();
@@ -85,7 +87,7 @@ public class CommentServiceImpl implements ICommentService {
         Optional<Comment> comment = commentRepository.findById(idComment);
         checkCommentExists(comment);
 
-        // User là chủ sở hữu comment mới có quyền chỉnh sửa
+        // User là chủ sở hữu comment mới có quyền xoá
         Optional<User> userFix = userRepository.findById(idUserFix);
         userService.checkUserExists(userFix);
         User userOwns = comment.get().getUser();
@@ -96,11 +98,25 @@ public class CommentServiceImpl implements ICommentService {
         return comment.get();
     }
 
+//    //    Lấy ra thông tin chi tiết của tất cả bình luận trong 1 bài viết
+//    public Set<Comment> getAllCommentByIdPost(Long idPost) {
+//        Optional<Post> post = postRepository.findById(idPost);
+//        PostServiceImpl.checkPostExists(post);
+//        Set<Comment> comments = post.get().getComments();
+//
+////        Mới nhất xếp trên
+//        comments.stream().sorted((l1, l2) -> (l2.getIdComment()).compareTo(l1.getIdComment()));
+//        return comments;
+//    }
+
     @Override
     public Set<Comment> getAllCommentChild(Long idCommentParent) {
         Optional<Comment> commentParent = commentRepository.findById(idCommentParent);
         checkCommentExists(commentParent);
         Set<Comment> comments = commentParent.get().getCommentChilds();
+
+//        Bình luận cũ hiển thị ở trên bình luận mới
+        comments.stream().sorted((o1, o2) -> (o1.getIdComment()).compareTo(o2.getIdComment()));
         return comments;
     }
 

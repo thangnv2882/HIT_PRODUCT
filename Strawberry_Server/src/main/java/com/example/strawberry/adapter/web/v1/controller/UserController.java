@@ -1,5 +1,6 @@
 package com.example.strawberry.adapter.web.v1.controller;
 
+import com.example.strawberry.adapter.web.base.AccessType;
 import com.example.strawberry.adapter.web.base.RestApiV1;
 import com.example.strawberry.adapter.web.base.VsResponseUtil;
 import com.example.strawberry.application.constants.UrlConstant;
@@ -33,7 +34,8 @@ public class UserController {
 
     @ApiOperation(value = "Xem tài khoản theo id.")
     @GetMapping(UrlConstant.User.DATA_USER_ID)
-    public ResponseEntity<?> getUserById(@PathVariable Long id) {
+    public ResponseEntity<?> getUserById(
+            @PathVariable("id") Long id) {
         return VsResponseUtil.ok(userService.findUserById(id));
     }
 
@@ -54,13 +56,15 @@ public class UserController {
 
     @ApiOperation(value = "Gửi lại code.")
     @GetMapping(UrlConstant.User.DATA_USER_RESEND_CODE)
-    public ResponseEntity<?> registerUser(@PathVariable("id") Long id) {
+    public ResponseEntity<?> registerUser(
+            @PathVariable("id") Long id) {
         return VsResponseUtil.ok(userService.resendCode(id));
     }
 
     @ApiOperation(value = "Quên mật khẩu.")
     @GetMapping(UrlConstant.User.DATA_USER_FORGET_PASSWORD)
-    public ResponseEntity<?> forgetPassword(@RequestParam("email") String email) {
+    public ResponseEntity<?> forgetPassword(
+            @RequestParam("email") String email) {
         return VsResponseUtil.ok(userService.forgetPassword(email));
     }
 
@@ -74,13 +78,15 @@ public class UserController {
 
     @ApiOperation(value = "Cập nhật thông tin tài khoản.")
     @PatchMapping(UrlConstant.User.DATA_USER_UPDATE_USER)
-    public ResponseEntity<?> editUserById(@PathVariable Long id, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> editUserById(
+            @PathVariable Long id, @RequestBody UserDTO userDTO) {
         return VsResponseUtil.ok(userService.updateUserById(id, userDTO));
     }
 
     @ApiOperation(value = "Xoá tài khoản.")
     @DeleteMapping(UrlConstant.User.DATA_USER_DELETE_USER)
-    public ResponseEntity<?> deleteUserById(@PathVariable Long id) {
+    public ResponseEntity<?> deleteUserById(
+            @PathVariable("id") Long id) {
         return VsResponseUtil.ok(userService.deleteUserById(id));
     }
 
@@ -94,7 +100,8 @@ public class UserController {
 
     @ApiOperation(value = "Lấy ra tất cả bài viết của user.")
     @GetMapping(UrlConstant.User.DATA_USER_GET_POSTS)
-    public ResponseEntity<?> getAllPostById(@PathVariable Long id) {
+    public ResponseEntity<?> getAllPostById(
+            @PathVariable("id") Long id) {
         return VsResponseUtil.ok(userService.getAllPostByIdUser(id));
     }
 
@@ -102,14 +109,15 @@ public class UserController {
     @GetMapping(UrlConstant.User.DATA_USER_GET_POST_ACCESS)
     public ResponseEntity<?> getAllPostByAccess(
             @PathVariable("idUser") Long id,
-            @PathVariable("access") int access
+            @PathVariable("access") AccessType access
     ) {
         return VsResponseUtil.ok(userService.getAllPostByIdUserAndAccess(id, access));
     }
 
     @ApiOperation(value = "Lấy ra tất cả nhóm của user.")
     @GetMapping(UrlConstant.User.DATA_USER_GET_GROUPS)
-    public ResponseEntity<?> getAllGroupByIdUser(@PathVariable Long id) {
+    public ResponseEntity<?> getAllGroupByIdUser(
+            @PathVariable("id") Long id) {
         return VsResponseUtil.ok(userService.getAllGroupByIdUser(id));
     }
 

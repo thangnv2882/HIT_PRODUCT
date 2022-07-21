@@ -1,5 +1,6 @@
 package com.example.strawberry.adapter.web.v1.controller;
 
+import com.example.strawberry.adapter.web.base.AccessType;
 import com.example.strawberry.adapter.web.base.RestApiV1;
 import com.example.strawberry.adapter.web.base.VsResponseUtil;
 import com.example.strawberry.application.constants.UrlConstant;
@@ -29,14 +30,14 @@ public class GroupController {
     @ApiOperation(value = "Lấy ra tất cả các nhóm theo quyền truy cập.")
     @GetMapping(UrlConstant.Group.DATA_GROUP_BY_ACCESS)
     public ResponseEntity<?> getGroupByAccess(
-            @RequestParam("access") int access) {
+            @RequestParam("access") AccessType access) {
         return VsResponseUtil.ok(groupService.getGroupByAccess(access));
     }
 
-
     @ApiOperation(value = "Lấy ra tất cả user của nhóm.")
     @GetMapping(UrlConstant.Group.DATA_GROUP_ALL_USER)
-    public ResponseEntity<?> getAllGroupByIdUser(@PathVariable("idGroup") Long idGroup) {
+    public ResponseEntity<?> getAllGroupByIdUser(
+            @PathVariable("idGroup") Long idGroup) {
         return VsResponseUtil.ok(userGroupService.getAllUserInGroup(idGroup));
     }
 
@@ -58,10 +59,19 @@ public class GroupController {
 
     @ApiOperation(value = "Thêm thành viên vào nhóm.")
     @PostMapping(UrlConstant.Group.DATA_GROUP_ADD_MEMBER)
-    public ResponseEntity<?> createGroup(
+    public ResponseEntity<?> addUserToGroup(
             @PathVariable("idGroup") Long idGroup,
             @PathVariable("idUser") Long idUser) {
         return VsResponseUtil.ok(userGroupService.addUserToGroup(idGroup, idUser));
+    }
+
+    @ApiOperation(value = "Xoá thành viên khỏi nhóm.")
+    @DeleteMapping(UrlConstant.Group.DATA_GROUP_DELETE_MEMBER)
+    public ResponseEntity<?> deleteUserFromGroup(
+            @PathVariable("idGroup") Long idGroup,
+            @PathVariable("idUserDelete") Long idUserDelete,
+            @PathVariable("idUser") Long idUser) {
+        return VsResponseUtil.ok(userGroupService.deleteUserFromGroup(idGroup, idUserDelete, idUser));
     }
 
     @ApiOperation(value = "Lấy các bài viết trong nhóm.")

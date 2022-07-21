@@ -1,5 +1,6 @@
 package com.example.strawberry.application.service;
 
+import com.example.strawberry.adapter.web.base.AccessType;
 import com.example.strawberry.adapter.web.v1.transfer.parameter.auth.AuthenticationRequest;
 import com.example.strawberry.adapter.web.v1.transfer.response.AuthenticationResponse;
 import com.example.strawberry.domain.dto.ResetPasswordDTO;
@@ -32,7 +33,7 @@ public interface IUserService {
     User updateAvatarById(Long id, MultipartFile avatar) throws IOException;
 
     List<?> getAllPostByIdUser(Long idUser);
-    List<?> getAllPostByIdUserAndAccess(Long idUser, int access);
+    List<?> getAllPostByIdUserAndAccess(Long idUser, AccessType access);
 
     Set<Group> getAllGroupByIdUser(Long idUser);
     Set<Image> getAllImageByIdUser(Long idUser);

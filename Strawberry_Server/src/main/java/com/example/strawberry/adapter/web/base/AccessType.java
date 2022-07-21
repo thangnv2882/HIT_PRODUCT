@@ -1,5 +1,5 @@
 package com.example.strawberry.adapter.web.base;
 
-public enum RestStatus {
-    ERROR, SUCCESS
+public enum AccessType {
+    PRIVATE, PUBLIC
 }

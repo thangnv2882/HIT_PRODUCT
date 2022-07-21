@@ -1,11 +1,13 @@
 package com.example.strawberry.application.service.Impl;
 
+import com.example.strawberry.adapter.web.base.AccessType;
 import com.example.strawberry.adapter.web.v1.transfer.parameter.auth.AuthenticationRequest;
 import com.example.strawberry.adapter.web.v1.transfer.response.AuthenticationResponse;
 import com.example.strawberry.application.constants.CommonConstant;
 import com.example.strawberry.application.constants.EmailConstant;
 import com.example.strawberry.application.constants.MessageConstant;
 import com.example.strawberry.application.dai.*;
+import com.example.strawberry.application.service.IPostService;
 import com.example.strawberry.application.service.ISendMailService;
 import com.example.strawberry.application.service.IUserService;
 import com.example.strawberry.application.utils.JwtTokenUtil;
@@ -36,7 +38,7 @@ public class UserServiceImpl implements IUserService {
 
     private final IUserRepository userRepository;
     private final IUserRegisterRepository userRegisterRepository;
-    private final IPostRepository postRepository;
+    private final PostServiceImpl postService;
     private final ModelMapper modelMapper;
     private final ISendMailService sendMailService;
     private final UploadFile uploadFile;
@@ -44,13 +46,13 @@ public class UserServiceImpl implements IUserService {
     private final MyUserDetailsService myUserDetailsService;
     private final JwtTokenUtil jwtTokenUtil;
     private final PasswordEncoder passwordEncoder;
-    private final IReactionRepository reactionRepository;
+//    private final IReactionRepository reactionRepository;
 
 
-    public UserServiceImpl(IUserRepository userRepository, IUserRegisterRepository userRegisterRepository, IPostRepository postRepository, ModelMapper modelMapper, ISendMailService sendMailService, UploadFile uploadFile, AuthenticationManager authenticationManager, MyUserDetailsService myUserDetailsService, JwtTokenUtil jwtTokenUtil, PasswordEncoder passwordEncoder, IReactionRepository reactionRepository) {
+    public UserServiceImpl(IUserRepository userRepository, IUserRegisterRepository userRegisterRepository, PostServiceImpl postService1, ModelMapper modelMapper, ISendMailService sendMailService, UploadFile uploadFile, AuthenticationManager authenticationManager, MyUserDetailsService myUserDetailsService, JwtTokenUtil jwtTokenUtil, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.userRegisterRepository = userRegisterRepository;
-        this.postRepository = postRepository;
+        this.postService = postService1;
         this.modelMapper = modelMapper;
         this.sendMailService = sendMailService;
         this.uploadFile = uploadFile;
@@ -58,7 +60,6 @@ public class UserServiceImpl implements IUserService {
         this.myUserDetailsService = myUserDetailsService;
         this.jwtTokenUtil = jwtTokenUtil;
         this.passwordEncoder = passwordEncoder;
-        this.reactionRepository = reactionRepository;
     }
 
 
@@ -239,21 +240,21 @@ public class UserServiceImpl implements IUserService {
         Optional<User> user = userRepository.findById(idUser);
         checkUserExists(user);
         Set<Post> posts = user.get().getPosts();
-        return PostServiceImpl.getAllPostNotInGroup(posts);
+        return postService.getAllPostNotInGroup(posts);
     }
 
     @Override
-    public List<?> getAllPostByIdUserAndAccess(Long idUser, int access) {
+    public List<?> getAllPostByIdUserAndAccess(Long idUser, AccessType access) {
         Optional<User> user = userRepository.findById(idUser);
         checkUserExists(user);
         Set<Post> posts = user.get().getPosts();
         Set<Post> postsEnd = new HashSet<>();
         posts.forEach(post -> {
-            if (post.getAccess() == access) {
+            if (post.getAccess().equals(access)) {
                 postsEnd.add(post);
             }
         });
-        return PostServiceImpl.getAllPostNotInGroup(postsEnd);
+        return postService.getAllPostNotInGroup(postsEnd);
     }
 
     @Override

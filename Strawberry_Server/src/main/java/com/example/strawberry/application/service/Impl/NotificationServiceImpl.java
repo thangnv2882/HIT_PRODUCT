@@ -32,6 +32,8 @@ public class NotificationServiceImpl implements INotificationService {
         Optional<User> user = userRepository.findById(idUser);
         UserServiceImpl.checkUserExists(user);
         List<Notification> notifications = notificationRepository.findByUserIdUser(idUser);
+
+//        Sắp xếp thông báo mới nhất ở trên
         notifications.sort((l1, l2) -> (l2.getIdNoti()).compareTo(l1.getIdNoti()));
         return notifications;
     }

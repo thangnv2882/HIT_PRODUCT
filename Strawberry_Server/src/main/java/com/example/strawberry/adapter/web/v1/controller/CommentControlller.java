@@ -10,9 +10,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
 
 @RestApiV1
 public class CommentControlller {
@@ -28,7 +25,7 @@ public class CommentControlller {
     public ResponseEntity<?> createCommentForPost(
             @PathVariable("idUser") Long idUser,
             @PathVariable("idPost") Long idPost,
-            @RequestBody @Valid CommentDTO commentDTO) {
+            @RequestBody CommentDTO commentDTO) {
         return VsResponseUtil.ok(commentService.createCommentForPost(idUser, idPost, commentDTO));
     }
 
@@ -37,7 +34,7 @@ public class CommentControlller {
     public ResponseEntity<?> createCommentForComment(
             @PathVariable("idUser") Long idUser,
             @PathVariable("idCommentParent") Long idCommentParent,
-            @RequestBody @Valid CommentDTO commentDTO) {
+            @RequestBody CommentDTO commentDTO) {
         return VsResponseUtil.ok(commentService.createCommentForComment(idUser, idCommentParent, commentDTO));
     }
 
@@ -46,7 +43,7 @@ public class CommentControlller {
     public ResponseEntity<?> updateCommentForPost(
             @PathVariable("idUserFix") Long idUserFix,
             @PathVariable("idComment") Long idComment,
-            @RequestBody @Valid CommentDTO commentDTO) {
+            @RequestBody CommentDTO commentDTO) {
         return VsResponseUtil.ok(commentService.updateCommentForPost(idUserFix, idComment, commentDTO));
     }
 

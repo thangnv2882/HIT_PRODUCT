@@ -32,7 +32,7 @@ public class UrlConstant {
 
         private static final String PRE_FIX = "/posts";
         public static final String DATA_POST = PRE_FIX;
-        public static final String DATA_POST_GET_POST = PRE_FIX + "/{idpPost}";
+        public static final String DATA_POST_GET_POST = PRE_FIX + "/{idPost}";
         public static final String DATA_POST_CREATE_POST = PRE_FIX + "/{idUser}/create-post";
         public static final String DATA_POST_CREATE_IN_GROUP = PRE_FIX + "/{idUser}/{idGroup}/create-post-in-group";
         public static final String DATA_POST_UPDATE_POST = PRE_FIX + "/{idUserFix}/{idPost}/update-post";
@@ -40,6 +40,7 @@ public class UrlConstant {
         public static final String DATA_POST_GET_IMAGES = PRE_FIX + "/{idPost}/images";
         public static final String DATA_POST_GET_VIDEOS = PRE_FIX + "/{idPost}/videos";
         public static final String DATA_POST_GET_COMMENTS = PRE_FIX + "/{idPost}/comments";
+        public static final String DATA_POST_FIND_BY_CONTENT = PRE_FIX + "/find-by-content";
 
     }
 
@@ -68,6 +69,7 @@ public class UrlConstant {
         public static final String DATA_GROUP_CREATE_GROUP = PRE_FIX + "/{idUser}/create-group";
         public static final String DATA_GROUP_DELETE_GROUP = PRE_FIX + "/{idGroup}/{idUser}/delete-group";
         public static final String DATA_GROUP_ADD_MEMBER = PRE_FIX + "/{idGroup}/{idUser}/add-user-to-group";
+        public static final String DATA_GROUP_DELETE_MEMBER = PRE_FIX + "/{idGroup}/{idUserDelete}/{idUser}/delete-user-from-group";
         public static final String DATA_GROUP_GET_POSTS = PRE_FIX + "/{idGroup}/{idUser}/get-post";
 
     }
