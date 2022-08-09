@@ -55,11 +55,6 @@ public class User extends AbstractAuditingEntity {
 
     private String code;
 
-//    @Enumerated(EnumType.STRING)
-//    @Column(name = "auth_provider")
-//    private AuthenticationProvider authProvider;
-
-
     //    link to table post
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
 //    @JsonIgnore

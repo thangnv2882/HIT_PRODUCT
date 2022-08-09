@@ -24,9 +24,6 @@ public class Comment extends AbstractAuditingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idComment;
 
-//    @NotBlank(message = "Khong duoc de trong")
-//    @Nationalized
-//    @Length(max = 20000)
     private String contentComment;
 
 //    link to table user

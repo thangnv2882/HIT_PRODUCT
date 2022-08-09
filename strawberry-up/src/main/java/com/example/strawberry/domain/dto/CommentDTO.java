@@ -10,8 +10,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CommentDTO {
-
     private String contentComment;
-
-
 }
